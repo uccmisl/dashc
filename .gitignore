@@ -1,0 +1,7 @@
+*.exe
+*.install
+*.vscode
+*.res
+_build
+.merlin
+ocaml-cohttp

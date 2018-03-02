@@ -1,0 +1,23 @@
+#!/bin/sh
+
+sudo apt -y install opam m4 git
+
+opam init --auto-setup --comp 4.06.1 --yes
+opam switch 4.06.1
+eval `opam config env`
+opam install -y jbuilder core async xml-light alcotest
+
+echo "Clone cohttp and switch to the first commit of 2018.01.07, version 1.0.2"
+git clone https://github.com/mirage/ocaml-cohttp.git
+cd ocaml-cohttp/
+git checkout 6b7499506183b9960fe53c399298281aea85effd
+cd ..
+
+rm ocaml-cohttp/cohttp-async/src/client.ml
+rm ocaml-cohttp/cohttp-async/src/client.mli
+cp ocaml-cohttp_/cohttp-async/src/client.ml ocaml-cohttp/cohttp-async/src/client.ml
+
+opam remove -y cohttp cohttp-async
+
+opam pin add -y cohttp ocaml-cohttp
+opam pin add -y cohttp-async ocaml-cohttp

@@ -1,0 +1,22 @@
+(jbuild_version 1)
+
+(executables
+  ((names (dashc tests))
+    (libraries (
+      core_kernel
+      core
+      async
+      cohttp
+      cohttp-async
+      xml-light
+      alcotest
+  ))
+  (preprocess (pps (ppx_jane)))
+  (modes (native))
+  (modules (dashc playback representation segm_result adapt_algo tests))
+))
+
+(alias
+ ((name runtest)
+  (deps (tests.exe))
+  (action (run ${<}))))
