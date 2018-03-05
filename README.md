@@ -94,19 +94,19 @@ Seg_#  Arr_time  Del_Time  Stall_Dur  Rep_Level  Del_Rate  Act_Rate  Byte_Size  
    30     70260      4053          0       1060      1822      1847     923626      51.299  
 ```
 
-# Dataset
+## Dataset
 
 The tool was tested with this dataset https://www.ucc.ie/en/misl/research/datasets/ivid_dataset/. The example of the log file above was taken with the Big Buck Bunny movie 4 second segment size x264 video codec.
 
-# Support
+## Support
 
 If you have an issue, please create a new one in github with necessary information (type of MPD file, OS version and etc.).
 
-# Citation
+## Citation
 
 Aleksandr Reviakin, Ahmed H. Zahran, Cormac J. Sreenan. dashc : a highly scalable client emulator for DASH video. The paper was submitted in March 2018 in MMSys 2018 Open Dataset & Software Track, this information will be updated if it will be accepted.
 
-# Licence
+## Licence
 
 This software has emanated from research conducted with the financial support of Science Foundation Ireland (SFI) under Grant Number 13/IA/1892.
 
