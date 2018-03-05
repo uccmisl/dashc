@@ -59,7 +59,7 @@ The detailed help can be found by running it with the -help flag:
 ./dashc.exe play -help
 ```
 
-The typical log file will look like the example below (here the data only for the first 30 segments is shown, ARBITER adaptation algorithm is used):
+The typical log file will look like the example below (here the data only for the first 30 segments is shown, ARBITER adaptation algorithm is used, bbb-264 4 seconds segment size clip is used):
 ```
 Seg_#  Arr_time  Del_Time  Stall_Dur  Rep_Level  Del_Rate  Act_Rate  Byte_Size  Buff_Level
     1       810       810          0        232      1225       248     124131       4.000  
@@ -93,6 +93,11 @@ Seg_#  Arr_time  Del_Time  Stall_Dur  Rep_Level  Del_Rate  Act_Rate  Byte_Size  
    29     66206      2999          0       1060      1740      1305     652588      51.353  
    30     70260      4053          0       1060      1822      1847     923626      51.299  
 ```
+
+# Dataset
+
+The tool was tested with this dataset https://www.ucc.ie/en/misl/research/datasets/ivid_dataset/. The example of the log file above was taken with the Big Buck Bunny movie 4 second segment size x264 video codec.
+
 # Support
 
 If you have an issue, please create a new one in github with necessary information (type of MPD file, OS version and etc.).
