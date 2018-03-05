@@ -94,6 +94,17 @@ Seg_#  Arr_time  Del_Time  Stall_Dur  Rep_Level  Del_Rate  Act_Rate  Byte_Size  
    30     70260      4053          0       1060      1822      1847     923626      51.299  
 ```
 
+The columns include next information:
+* segment number starting from 1;
+* arrival time of a segment in milliseconds;
+* time spent for delivery of this segment in milliseconds;
+* stall (freeze) duration in milliseconds;
+* representation rate of downloaded segment in Kbit/s (taken from MPD file);
+* delivery rate of the network in Kbit/s (segment size divided by time for delivery);
+* the actual bitrate of this segment (segment size divided by the segment duration) in Kbit/s;
+* segment size in bytes;
+* buffer level after this segment was just downloaded, in seconds;
+
 ## Dataset
 
 The tool was tested with this dataset https://www.ucc.ie/en/misl/research/datasets/ivid_dataset/. The example of the log file above was taken with the Big Buck Bunny movie 4 second segment size x264 video codec.
