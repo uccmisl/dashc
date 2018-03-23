@@ -12,6 +12,7 @@ Changelog
 --------------------
 * Cohttp master 2018.03.23, version 1.1.0 is used now instead of the master 2018.01.07, version 1.0.2
 * Add specific versions core.v0.10.0 and async.v0.10.0 in configure (temporarily)
+* Short FAQ was added into README.md
 
 0.1.18 (2018.03.02)
 --------------------

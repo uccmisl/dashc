@@ -113,6 +113,16 @@ The tool was tested with this dataset https://www.ucc.ie/en/misl/research/datase
 
 If you have an issue, please create a new one in github with necessary information (type of MPD file, OS version and etc.).
 
+## FAQ
+
+Q: X package (dependency) cannot be installed
+
+A: Update of the packages database might help
+```
+opam update          # Update the packages database
+opam upgrade         # Bring everything to the latest version possible
+```
+
 ## Citation
 
 Aleksandr Reviakin, Ahmed H. Zahran, Cormac J. Sreenan. dashc : a highly scalable client emulator for DASH video. The paper was submitted in March 2018 in MMSys 2018 Open Dataset & Software Track, this information will be updated if it will be accepted.
