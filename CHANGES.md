@@ -8,6 +8,10 @@ Known issues
 
 Changelog
 
+0.1.* (2018.03.23)
+--------------------
+* Cohttp master 2018.03.23, version 1.1.0 is used now instead of the master 2018.01.07, version 1.0.2
+
 0.1.18 (2018.03.02)
 --------------------
 * Update to OCaml 4.06.1 from 4.06.0

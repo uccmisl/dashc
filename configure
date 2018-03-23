@@ -7,10 +7,10 @@ opam switch 4.06.1
 eval `opam config env`
 opam install -y jbuilder core async xml-light alcotest
 
-echo "Clone cohttp and switch to the first commit of 2018.01.07, version 1.0.2"
+echo "Clone cohttp and switch to the first commit of 2018.03.23, version 1.1.0"
 git clone https://github.com/mirage/ocaml-cohttp.git
 cd ocaml-cohttp/
-git checkout 6b7499506183b9960fe53c399298281aea85effd
+git checkout b30207c779b56de78d925f271b895e4288b3abb7
 cd ..
 
 rm ocaml-cohttp/cohttp-async/src/client.ml
