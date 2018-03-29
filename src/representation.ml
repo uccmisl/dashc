@@ -53,6 +53,38 @@ let link_of_media media segmentNumber =
   | Template_url media -> (String.chop_suffix_exn media ~suffix:"$Number$.m4s") ^ (string_of_int segmentNumber) ^ ".m4s"
   | List_url list_url -> List.nth_exn list_url (segmentNumber - 1)
 
+let media_presentation_duration_from_mpd (mpd : xml) =
+  match mpd with
+  | Element ("MPD", attrs, clist) ->
+    let duration_str = (Caml.List.assoc "mediaPresentationDuration" attrs) in
+    begin match (String.split_on_chars duration_str ~on:['P'; 'Y'; 'M'; 'W'; 'D'; 'T'; 'H'; 'M'; 'S']) with
+    | [_; _; sec; _] -> float_of_string sec
+    | [_; _; min; sec; _] -> (float_of_string min *. 60.) +. float_of_string sec
+    | [_; _; hours; min; sec; _] ->
+      (float_of_string hours *. 60. *. 60.) +. (float_of_string min *. 60.) +. float_of_string sec
+    | [_; days; _; hours; min; sec; _] ->
+      (float_of_string days *. 24. *. 60. *. 60.) +.
+      (float_of_string hours *. 60. *. 60.) +. (float_of_string min *. 60.) +. float_of_string sec
+    | [_; months; days; _; hours; min; sec; _] ->
+      (float_of_string months *.30. *. 24. *. 60. *. 60.) +. (float_of_string days *. 24. *. 60. *. 60.) +.
+      (float_of_string hours *. 60. *. 60.) +. (float_of_string min *. 60.) +. float_of_string sec
+    | [_; years; months; days; _; hours; min; sec; _] ->
+      (float_of_string years *. 365. *. 24. *. 60. *. 60.) +.
+      (float_of_string months *.30. *. 24. *. 60. *. 60.) +. (float_of_string days *. 24. *. 60. *. 60.) +.
+      (float_of_string hours *. 60. *. 60.) +. (float_of_string min *. 60.) +. float_of_string sec
+    | _ -> failwith "Incorrect mediaPresentationDuration attribute"
+    end
+  | _ -> failwith "mediaPresentationDuration attribute was not found"
+
+let get_last_segment_index xml_str segment_duration last_segment_index =
+  let duration = media_presentation_duration_from_mpd xml_str in
+  let total_number_of_segments = int_of_float (round ~dir:`Up (duration /. float_of_int segment_duration)) in
+  match last_segment_index with
+  | Some last_segment_index ->
+    if last_segment_index < total_number_of_segments then last_segment_index
+    else total_number_of_segments
+  | None -> total_number_of_segments
+
 let repr_table_from_mpd (mpd : xml) =
   let adaptationSets = Xml.fold (fun acc x ->
       match x with
@@ -164,8 +196,7 @@ let open_connection link = function
     >>= fun (ic,oc) -> return (Some (ic,oc))
   | false -> return None
 
-(* run download_chunk_sizes_per_repr and save to the local segmentlist_%mpd_name%.txt file *)
-let make_segment_size_file ~link ~persist ~last_segment_index =
+let make_segment_size_file ~link ~persist =
   try_with (fun () ->
       let _, segmlist_mpd = String.rsplit2_exn link ~on:'/' in
       let outc = Out_channel.create @@ "segmentlist_" ^ segmlist_mpd ^ ".txt" in
@@ -174,6 +205,8 @@ let make_segment_size_file ~link ~persist ~last_segment_index =
       body |> Cohttp_async.Body.to_string >>= fun body ->
       let mpd = Xml.parse_string body in
       let representations : (int, representation) Hashtbl.t = repr_table_from_mpd mpd in
+      let segment_duration = (Hashtbl.find_exn representations 1).segment_duration in
+      let last_segment_index = get_last_segment_index mpd segment_duration None in
       let root_link, _ = String.rsplit2_exn link '/' in
       let root_link = root_link ^ "/" in
       download_chunk_sizes_per_repr

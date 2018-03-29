@@ -113,7 +113,7 @@ let rec playback
     print_result (List.hd_exn results) None;
     print_result (List.hd_exn results) outc;
     match segment_number >= last_segment_index with
-    | true -> return @@ print_endline "Stop after the lastsegmindex segment parameter (default is 150)"
+    | true -> Deferred.unit
     | false ->
       playback
         ?conn:conn
@@ -256,7 +256,10 @@ let run_client
       open_connection link persist >>= fun conn ->
       Client.get ?conn:conn (Uri.of_string link) >>= fun (resp, body) ->
       body |> Cohttp_async.Body.to_string >>= fun body ->
-      let representations : (int, representation) Hashtbl.t = Xml.parse_string body |> repr_table_from_mpd in
+      let mpd = Xml.parse_string body in
+      let representations : (int, representation) Hashtbl.t = repr_table_from_mpd mpd in
+      let segment_duration = (Hashtbl.find_exn representations 1).segment_duration in
+      let last_segment_index = get_last_segment_index mpd segment_duration last_segment_index in
       let root_link, segmlist_mpd = String.rsplit2_exn link ~on:'/' in
       let root_link = root_link ^ "/" in
       chunk_sizes adapt_alg segm_size_from_file link representations last_segment_index root_link segmlist_mpd conn
@@ -278,11 +281,11 @@ let run_client
         ~maxbuf:(float_of_int maxbuf)
         ~adapt_method:adapt_method
         ~last_segment_index:last_segment_index
-        ~segment_duration:(Hashtbl.find_exn representations 1).segment_duration
+        ~segment_duration:segment_duration
       >>= fun () ->
       match outc with
       | Some outc -> Out_channel.close outc; Deferred.unit
-      | None ->  Deferred.unit
+      | None -> Deferred.unit
   )
   >>| function
   | Ok () -> ()
@@ -321,8 +324,8 @@ let play =
           ~doc:" the run (R) number for the trace file"
         and subfolder = flag "-subfolder" (optional_with_default "" string)
           ~doc:" subfolder for the file"
-        and last_segment_index = flag "-lastsegmindex" (optional_with_default 150 int)
-          ~doc:" last segment index for play"
+        and last_segment_index = flag "-lastsegmindex" (optional int)
+          ~doc:" last segment index for the playback"
         and gensegmfile = flag "-gensegmfile" (optional_with_default false bool)
           ~doc:" generate segmentlist_%mpd_name%.txt file only (it will be rewritten if exists)"
         and segm_size_from_file = flag "-segmentlist" (optional_with_default "head" string)
@@ -333,7 +336,7 @@ let play =
                 usage of head requests works only with non-persistent connection so far and it it set by default (for this operation)"
         in
         fun () -> match gensegmfile with
-        | true -> make_segment_size_file ~link:link ~persist:false ~last_segment_index:last_segment_index
+        | true -> make_segment_size_file ~link:link ~persist:false
         | false -> run_client
             ~link:link
             ~adapt_alg:adapt_alg

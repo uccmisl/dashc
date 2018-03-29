@@ -1,18 +1,12 @@
 Known issues
 --------------------
 * full_by_range, main_byte_range, onDemand_byte_range profiles (created by GPAC) are not supported
-* Parsing of MPD won't be successfull if the representation qualities will be mixed
-* Currently last segment index by default is 150, however it should be read from MPD file
-  For example, mediaPresentationDuration="PT0H9M56.458S" means 9 minutes, 56.458 seconds
-
-
-Changelog
 
 0.1.* (*)
 --------------------
 * Cohttp master 2018.03.23, version 1.1.0 is used now instead of the master 2018.01.07, version 1.0.2
-* Add specific versions core.v0.10.0 and async.v0.10.0 in configure (temporarily)
-* Short FAQ was added into README.md
+* Added specific versions of core.v0.10.0 and async.v0.10.0 in configure (temporarily)
+* Added parsing of the mediaPresentationDuration, lastsegmindex argument is optional now
 
 0.1.18 (2018.03.02)
 --------------------
