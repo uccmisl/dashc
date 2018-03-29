@@ -101,7 +101,7 @@ let repr_table_from_mpd (mpd : xml) =
       ) 0 adaptationSetTag in
     acc @ [repr_total_number]
   ) in
-  let total_number_of_repr = List.length total_number_of_repr_per_adaptation_set in
+  let total_number_of_repr = List.fold total_number_of_repr_per_adaptation_set ~init:0 ~f:(fun acc x -> acc + x) in
   let representations : (int, representation) Hashtbl.t =
     Hashtbl.Poly.create ~size:total_number_of_repr () in
   let index = ref total_number_of_repr in

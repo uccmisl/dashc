@@ -7,6 +7,7 @@ Known issues
 * Cohttp master 2018.03.23, version 1.1.0 is used now instead of the master 2018.01.07, version 1.0.2
 * Added specific versions of core.v0.10.0 and async.v0.10.0 in configure (temporarily)
 * Added parsing of the mediaPresentationDuration, lastsegmindex argument is optional now
+* Fixed regression added in 0.1.18 (incorrect calculation of the total_number_of_repr)
 
 0.1.18 (2018.03.02)
 --------------------
