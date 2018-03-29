@@ -1,6 +1,6 @@
 Known issues
 --------------------
-* full_by_range, main_byte_range, onDemand_byte_range profiles (created by GPAC) are not supported
+* full_byte_range, main_byte_range, onDemand_byte_range profiles are not supported
 
 0.1.* (*)
 --------------------
