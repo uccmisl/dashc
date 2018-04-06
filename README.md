@@ -16,7 +16,7 @@ dashc has several options which can be changed through the command line argument
 ## Installation
 
 
-dashc was tested in Ubuntu 16.04/16.10/17.04/17.10 with x64 architecture and in Ubuntu 16.04.3 with ARM architecture (Raspberry Pi 2/3)
+dashc was tested in Ubuntu 16.04/16.10/17.04/17.10/18.04 with x64 architecture and in Ubuntu 16.04.3 with ARM architecture (Raspberry Pi 2/3)
 
 To install (./configure will ask for a sudo password to install opam package manager):
 ```
