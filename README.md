@@ -123,6 +123,15 @@ opam update          # Update the packages database
 opam upgrade         # Bring everything to the latest version possible
 ```
 
+Q: After the first ./configure, the make prints something like:
+```
+make: jbuilder: Command not found
+Makefile:4: recipe for target 'all' failed
+make: *** [all] Error 127
+```
+
+A: Log out of the OS and log in back might help
+
 ## Citation
 
 Aleksandr Reviakin, Ahmed H. Zahran, Cormac J. Sreenan. dashc : a highly scalable client emulator for DASH video. The paper was submitted in March 2018 in MMSys 2018 Open Dataset & Software Track, this information will be updated if it will be accepted.
