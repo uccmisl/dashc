@@ -38,9 +38,11 @@ type segm_result = {
   (* stall_dur is a time which was spent with buffer equal to 0
      (during waiting of the next segment), ms *)
   stall_dur : int;
-  (* representation_rate is a bandwidth of this segment according to an MPD file in bits/s *)
+  (* representation_rate is a bandwidth of this segment
+     according to an MPD file in bits/s *)
   representation_rate : int;
-  (* actual_representation_rate is equal to (segment_size / segment_duration) in K(something)bits/s *)
+  (* actual_representation_rate is equal to
+     (segment_size / segment_duration) in K(something)bits/s *)
   actual_representation_rate : int;
   (* segment_size, bytes *)
   segment_size : int;
@@ -72,11 +74,18 @@ let print_result result_ = function
     print_string "  ";
     print_int_zeros ~number:result_.stall_dur ~zeroes_number:9 ~zero:false;
     print_string "  ";
-    print_int_zeros ~number:(result_.representation_rate / measure) ~zeroes_number:9 ~zero:false;
+    print_int_zeros
+      ~number:(result_.representation_rate / measure) ~zeroes_number:9 ~zero:false;
     print_string "  ";
-    print_int_zeros ~number:(int_of_float (((float_of_int result_.segment_size *. 8. *. measure_float) /. float_of_int result_.time_for_delivery) *. us_float /. measure_float)) ~zeroes_number:8 ~zero:false;
+    print_int_zeros
+      ~number:(int_of_float
+        (((float_of_int result_.segment_size *. 8. *. measure_float) /.
+        float_of_int result_.time_for_delivery) *. us_float /. measure_float))
+      ~zeroes_number:8 ~zero:false;
     print_string "  ";
-    print_int_zeros ~number:(result_.actual_representation_rate / measure)  ~zeroes_number:8 ~zero:false;
+    print_int_zeros
+      ~number:(result_.actual_representation_rate / measure)
+      ~zeroes_number:8 ~zero:false;
     print_string "  ";
     print_int_zeros ~number:(result_.segment_size) ~zeroes_number:9 ~zero:false;
     print_string "  ";
@@ -84,13 +93,21 @@ let print_result result_ = function
     print_endline ""
   | Some outc ->
     Out_channel.output_string outc @@ Printf.sprintf "%5d" result_.segment_number ^ "  ";
-    Out_channel.output_string outc @@ Printf.sprintf "%8d" (result_.arrival_time / us) ^ "  ";
-    Out_channel.output_string outc @@ Printf.sprintf "%8d" (result_.time_for_delivery / us) ^ "  ";
+    Out_channel.output_string outc @@
+      Printf.sprintf "%8d" (result_.arrival_time / us) ^ "  ";
+    Out_channel.output_string outc @@
+      Printf.sprintf "%8d" (result_.time_for_delivery / us) ^ "  ";
     Out_channel.output_string outc @@ Printf.sprintf "%9d" result_.stall_dur ^ "  ";
-    Out_channel.output_string outc @@ Printf.sprintf "%9d" (result_.representation_rate / measure) ^ "  ";
-    Out_channel.output_string outc @@ Printf.sprintf "%8d" (int_of_float (((float_of_int result_.segment_size *. 8. *. measure_float) /. float_of_int result_.time_for_delivery) *. us_float /. measure_float)) ^ "  ";
-    Out_channel.output_string outc @@ Printf.sprintf "%8d" (result_.actual_representation_rate / measure) ^ "  ";
+    Out_channel.output_string outc @@
+      Printf.sprintf "%9d" (result_.representation_rate / measure) ^ "  ";
+    Out_channel.output_string outc @@
+      Printf.sprintf "%8d" (int_of_float
+        (((float_of_int result_.segment_size *. 8. *. measure_float) /.
+        float_of_int result_.time_for_delivery) *. us_float /. measure_float)) ^ "  ";
+    Out_channel.output_string outc @@
+      Printf.sprintf "%8d" (result_.actual_representation_rate / measure) ^ "  ";
     Out_channel.output_string outc @@ Printf.sprintf "%9d" result_.segment_size ^ "  ";
-    Out_channel.output_string outc @@ Printf.sprintf "%10.3f" result_.buffer_level_in_momentum ^ "  ";
+    Out_channel.output_string outc @@
+      Printf.sprintf "%10.3f" result_.buffer_level_in_momentum ^ "  ";
     Out_channel.newline outc;
     Out_channel.flush outc

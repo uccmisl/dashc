@@ -21,7 +21,8 @@
 open Playback
 
 let input_algorithm () =
-  Alcotest.check Alcotest.unit "BBA-2 is supported" () (check_input_algorithm_existence "bba-2")
+  Alcotest.check Alcotest.unit
+    "BBA-2 is supported" () (check_input_algorithm_existence "bba-2")
 
 let () =
   Alcotest.run "tests" [

@@ -28,17 +28,26 @@ open Adapt_algo
 
 let supported_algorithms = ["conv"; "bba-0"; "bba-1"; "bba-2"; "arbiter"]
 let algorithms_with_required_chunk_sizes = ["bba-1"; "bba-2"; "arbiter"]
-let log_columns = ["Seg_#"; "Arr_time"; "Del_Time"; "Stall_Dur"; "Rep_Level"; "Del_Rate"; "Act_Rate"; "Byte_Size"; "Buff_Level"]
+let log_columns = ["Seg_#"; "Arr_time"; "Del_Time"; "Stall_Dur";
+"Rep_Level"; "Del_Rate"; "Act_Rate"; "Byte_Size"; "Buff_Level"]
 
 let is_buffer_full buffer_size maxbuf segment_duration =
   buffer_size > (maxbuf -. float_of_int segment_duration)
 
 let next_repr_number representations results last_segment_index = function
-  | Conv -> Conv.next_representation_level ~representations:representations ~results:results
-  | BBA_0 algo -> BBA_0.next_representation_level ~algo:algo ~representations:representations ~results:results
-  | BBA_1 algo -> BBA_1.next_representation_level ~algo:algo ~representations:representations ~results:results last_segment_index
-  | BBA_2 algo -> BBA_2.next_representation_level ~algo:algo ~representations:representations ~results:results last_segment_index
-  | ARBITER algo -> ARBITER.next_representation_level ~algo:algo ~representations:representations ~results:results last_segment_index
+  | Conv ->
+    Conv.next_representation_level ~representations:representations ~results:results
+  | BBA_0 algo ->
+    BBA_0.next_representation_level
+    ~algo:algo ~representations:representations ~results:results
+  | BBA_1 algo ->
+    BBA_1.next_representation_level
+    ~algo:algo ~representations:representations ~results:results last_segment_index
+  | BBA_2 algo ->
+    BBA_2.next_representation_level
+    ~algo:algo ~representations:representations ~results:results last_segment_index
+  | ARBITER algo -> ARBITER.next_representation_level
+    ~algo:algo ~representations:representations ~results:results last_segment_index
 
 let rec playback
     ?conn
@@ -73,9 +82,13 @@ let rec playback
       ~segment_duration:segment_duration
   | false ->
     let start = Time.now () in
-    let next_repr_number = next_repr_number representations results last_segment_index adapt_method in
+    let next_repr_number =
+      next_repr_number representations results last_segment_index adapt_method in
     let next_repr = Hashtbl.find_exn representations next_repr_number in
-    Client.get ?conn:conn (Uri.of_string (root_link ^ (link_of_media next_repr.media segment_number))) >>= fun (resp, body) ->
+    let link_to_next_chunk =
+      (root_link ^ (link_of_media next_repr.media segment_number)) in
+    Client.get?conn:conn (Uri.of_string link_to_next_chunk)
+    >>= fun (resp, body) ->
     body |> Cohttp_async.Body.to_string >>= fun body ->
     let current_time = Time.now () in
     let time_diff = Time.diff current_time start in
@@ -92,7 +105,8 @@ let rec playback
       end
     | false -> buffer_size
     in
-    let stall = match buffer_size > (initb *. float_of_int segment_duration) && buffer_size < diff with
+    let stall = match buffer_size > (initb *. float_of_int segment_duration)
+      && buffer_size < diff with
     (* check this condition for startup phaze *)
     | true -> int_of_float @@ (diff -. buffer_size) *. 1000.
     | false -> 0
@@ -100,7 +114,8 @@ let rec playback
     let results =
       {
         segment_number = segment_number;
-        arrival_time = int_of_float @@ Time.Span.to_us (Time.diff current_time absolute_start_time);
+        arrival_time =
+          int_of_float @@ Time.Span.to_us (Time.diff current_time absolute_start_time);
         time_for_delivery = int_of_float @@ Time.Span.to_us time_diff;
         stall_dur = stall;
         representation_rate = next_repr.bandwidth;
@@ -133,15 +148,20 @@ let rec playback
 let check_input_algorithm_existence input_alg =
   match List.exists supported_algorithms ~f:(fun x -> x = input_alg) with
   | true -> ()
-  | false -> failwith "The chosen adaptation algorithm is not supported, please check help" 
+  | false ->
+    failwith "The chosen adaptation algorithm is not supported, please check help" 
 
 let create_log_channel logname log_folder v_number r_number = function
   | true ->
     begin match logname, v_number with
     | "now", _ ->
       begin match log_folder with
-      | "" -> Some (Out_channel.create @@  Time.to_filename_string (Time.now ()) ~zone:Time.Zone.utc)
-      | _ -> Some (Out_channel.create (log_folder ^ "/" ^  Time.to_filename_string (Time.now ()) ~zone:Time.Zone.utc))
+      | "" ->
+        Some (Out_channel.create @@
+          Time.to_filename_string (Time.now ()) ~zone:Time.Zone.utc)
+      | _ ->
+        Some (Out_channel.create
+          (log_folder ^ "/" ^  Time.to_filename_string (Time.now ()) ~zone:Time.Zone.utc))
       end
     | _, "-V99" ->
       begin match log_folder with
@@ -150,8 +170,14 @@ let create_log_channel logname log_folder v_number r_number = function
       end
     | _, _ ->
       begin match log_folder with
-      | "" -> Some (Out_channel.create ("trace-" ^ Time.to_filename_string (Time.now ()) ~zone:Time.Zone.utc ^ "-" ^ logname ^ v_number ^ r_number ^ ".res"))
-      | _ -> Some (Out_channel.create (log_folder ^ "/" ^ "trace-" ^ Time.to_filename_string (Time.now ()) ~zone:Time.Zone.utc ^ "-" ^ logname ^ v_number ^ r_number ^ ".res"))
+      | "" ->
+        Some (Out_channel.create
+          ("trace-" ^ Time.to_filename_string (Time.now ())
+          ~zone:Time.Zone.utc ^ "-" ^ logname ^ v_number ^ r_number ^ ".res"))
+      | _ ->
+        Some (Out_channel.create
+          (log_folder ^ "/" ^ "trace-" ^ Time.to_filename_string (Time.now ())
+          ~zone:Time.Zone.utc ^ "-" ^ logname ^ v_number ^ r_number ^ ".res"))
       end
     end
   | false -> None
@@ -159,7 +185,14 @@ let create_log_channel logname log_folder v_number r_number = function
 let check_requirement_for_chunk_sizes input_alg =
   List.exists algorithms_with_required_chunk_sizes ~f:(fun x -> x = input_alg)
 
-let chunk_sizes adapt_alg segm_size_from_file link representations last_segment_index root_link segmlist_mpd conn =
+let chunk_sizes
+    adapt_alg
+    segm_size_from_file
+    link representations
+    last_segment_index
+    root_link
+    segmlist_mpd
+    conn =
   match check_requirement_for_chunk_sizes adapt_alg with
   | true ->
     let chunk_sizes_per_repr = match segm_size_from_file with
@@ -170,8 +203,10 @@ let chunk_sizes adapt_alg segm_size_from_file link representations last_segment_
           ~number_of_representations:(Hashtbl.length representations)
           ~last_segment_index:last_segment_index
     | "remote" ->
-        let segm_list_remote_link = root_link ^ "/" ^ "segmentlist_" ^ segmlist_mpd ^ ".txt" in
-        Client.get ?conn:conn (Uri.of_string segm_list_remote_link) >>= fun (resp, body) ->
+        let segm_list_remote_link =
+          root_link ^ "/" ^ "segmentlist_" ^ segmlist_mpd ^ ".txt" in
+        Client.get ?conn:conn (Uri.of_string segm_list_remote_link)
+        >>= fun (resp, body) ->
         body |> Cohttp_async.Body.to_string >>= fun body_string ->
         read_segment_size_file
           ~remote_string:body_string
@@ -186,7 +221,8 @@ let chunk_sizes adapt_alg segm_size_from_file link representations last_segment_
           ~last_segment_index:last_segment_index
     in
     chunk_sizes_per_repr >>| fun chunk_sizes_per_repr ->
-    let average_chunk_size_per_repr = calculate_average_chunk_size_per_repr chunk_sizes_per_repr in
+    let average_chunk_size_per_repr =
+      calculate_average_chunk_size_per_repr chunk_sizes_per_repr in
     (chunk_sizes_per_repr, average_chunk_size_per_repr)
   | false -> return (Hashtbl.Poly.create ~size:10 (), [])
 
@@ -252,19 +288,30 @@ let run_client
   try_with (fun () ->
       check_input_algorithm_existence adapt_alg;
       Sys.command @@ "mkdir -p " ^ log_folder >>= fun _ ->
-      let outc = create_log_channel logname log_folder ("-V" ^ v_number) ("-R" ^ r_number) turnlogon in
+      let outc =
+        create_log_channel
+          logname log_folder ("-V" ^ v_number) ("-R" ^ r_number) turnlogon in
       open_connection link persist >>= fun conn ->
       Client.get ?conn:conn (Uri.of_string link) >>= fun (resp, body) ->
       body |> Cohttp_async.Body.to_string >>= fun body ->
       let mpd = Xml.parse_string body in
       let representations : (int, representation) Hashtbl.t = repr_table_from_mpd mpd in
       let segment_duration = (Hashtbl.find_exn representations 1).segment_duration in
-      let last_segment_index = get_last_segment_index mpd segment_duration last_segment_index in
+      let last_segment_index =
+        get_last_segment_index mpd segment_duration last_segment_index in
       let root_link, segmlist_mpd = String.rsplit2_exn link ~on:'/' in
       let root_link = root_link ^ "/" in
-      chunk_sizes adapt_alg segm_size_from_file link representations last_segment_index root_link segmlist_mpd conn
+      chunk_sizes
+        adapt_alg
+        segm_size_from_file
+        link
+        representations
+        last_segment_index
+        root_link
+        segmlist_mpd conn
       >>= fun (chunk_sizes_per_repr, average_chunk_size_per_repr) ->
-      new_adapt_method chunk_sizes_per_repr average_chunk_size_per_repr adapt_alg >>= fun adapt_method ->
+      new_adapt_method chunk_sizes_per_repr average_chunk_size_per_repr adapt_alg
+      >>= fun adapt_method ->
       print_log_header_on_screen;
       print_log_header_into_file outc;
       let maxbuf = get_max_muf maxbuf adapt_method in
@@ -327,13 +374,18 @@ let play =
         and last_segment_index = flag "-lastsegmindex" (optional int)
           ~doc:" last segment index for the playback"
         and gensegmfile = flag "-gensegmfile" (optional_with_default false bool)
-          ~doc:" generate segmentlist_%mpd_name%.txt file only (it will be rewritten if exists)"
-        and segm_size_from_file = flag "-segmentlist" (optional_with_default "head" string)
+          ~doc:" generate segmentlist_%mpd_name%.txt file only \
+                (it will be rewritten if exists)"
+        and segm_size_from_file =
+          flag "-segmentlist" (optional_with_default "head" string)
           ~doc:" get segment sizes from \n \
                 local - local segmentlist_%mpd_name%.txt file \n \
-                remote - download remote segmentlist_%mpd_name%.txt file from the same folder where mpd is located \n \
-                head - get segment size by sending head requests before playing for each segment per representation \
-                usage of head requests works only with non-persistent connection so far and it it set by default (for this operation)"
+                remote - download remote segmentlist_%mpd_name%.txt file \
+                  from the same folder where mpd is located \n \
+                head - get segment size by sending head requests \
+                  before playing for each segment per representation \
+                usage of head requests works only with non-persistent connection so far \
+                  and it it set by default (for this operation)"
         in
         fun () -> match gensegmfile with
         | true -> make_segment_size_file ~link:link ~persist:false
