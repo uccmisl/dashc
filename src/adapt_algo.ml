@@ -49,19 +49,6 @@ end = struct
     else
       let conv_weight = 0.85 in
       let last_result = List.hd_exn results in
-      (* Del_Rate *)
-      (* The range of integers is -2^30 to 2^30-1 (or -2^62 to 2^62-1),
-         so this conversion to Int64 is necessary for 32 bit platforms,
-         Int32 and Int64 are both slower than ordinary int *)
-      (* let throughput = float_of_int (last_result.segment_size * 8 * us * us) /.
-          float_of_int (last_result.time_for_delivery) in *)
-      (* https://github.com/janestreet/base/blob/master/src/int64.ml: let ( * ) = mul *)
-      (*let throughput = Int64.to_float ( Int64.( * ) (Int64.( * )
-      (Int64.of_int last_result.segment_size) (Int64.of_int 8)) (Int64.( * )
-      (Int64.of_int us) (Int64.of_int us)) ) /.
-      float_of_int (last_result.time_for_delivery) in*)
-      (* OCaml's floating-point numbers follow the IEEE 754 standard,
-         using double precision (64 bits) numbers *)
       let throughput =
         ((float_of_int last_result.segment_size) *. 8. *. us_float *. us_float) /.
           float_of_int (last_result.time_for_delivery) in
@@ -383,8 +370,7 @@ module BBA_1 = struct
        or the next lowest
        available video rate (Rate ). *)
     (* the returned repr_next here begins from 0,
-       but it should from 1, so it is increased later,
-       should be made more readable *)
+       but it should from 1, so it is increased later *)
     let chunk_size_next, repr_next =
       (* the old version
       if chunk_size_opt > chunk_size_plus then chunk_size_plus,repr_plus
@@ -403,9 +389,6 @@ module BBA_1 = struct
             if (x <= chunk_size_curr) && (x <= chunk_size_opt_discrete) then (x, idx)
             else acc
           )
-      (* if chunk_size_opt < chunk_size_plus
-          && chunk_size_opt > chunk_size_minus then chunk_size_prev *)
-      (*else chunk_size_prev, repr_prev *)
       else chunk_size_prev, repr_prev - 1
     in
     (* repr_next *)
@@ -440,8 +423,7 @@ module BBA_2 = struct
 (* The termination of the startup phase will happen in case of
    1) the buffer is decreasing or 2) the chunk map suggests a higher rate.
    After that even if cushion is not full,
-   the algorithms will be in steady-state all the time.
-   This logic was approved by the author of the algorithm. *)
+   the algorithms will be in steady-state all the time.*)
   let startup_phase = ref true
 
   let next_representation_level
@@ -487,9 +469,7 @@ module BBA_2 = struct
            if the chunk is downloaded 8x (0.875 coefficient) faster than segment duration
            and this condition linearly decreases to 2x (0.5 coefficient)
            by the time cushion is full from the time when the first chunk was downloaded,
-           so the coefficient can be calculated as a function of bitrate level.
-           Calculation of the target_coefficient
-           was approved by the author of the algorithm. *)
+           so the coefficient can be calculated as a function of bitrate level.*)
         let f buf =
           let slope =
             (0.5 -. 0.875) /. (0.9 *. algo.maxb -. float_of_int segment_duration) in
@@ -645,19 +625,12 @@ end = struct
             ~curr_index:(curr_index + 1)
             ~acc_weights:(numerator /. denominator :: acc_weights)
       in
-      (* would it be calculated during compilation phase? *)
       let weights = calculate_weights ~curr_index:0 ~acc_weights:[] in
       let rec calculate_weighted_throughput_mean ~curr_index ~acc =
         if curr_index >= window_size then
           acc
         else
           let result_ = List.nth_exn results curr_index in
-          (* the bandwidth in representation structure is measured in bits/s,
-             so it should be here in the same type of units *)
-          (* let measured_throughput =
-             (result_.segment_size * 8 * us * us) / result_.time_for_delivery in *)
-          (* OCaml's floating-point numbers follow the IEEE 754 standard,
-             using double precision (64 bits) numbers *)
           let measured_throughput =
             ((float_of_int result_.segment_size) *. 8. *. us_float *. us_float) /.
               float_of_int (result_.time_for_delivery) in
@@ -687,12 +660,6 @@ end = struct
           float_of_int estimation_window *. acc /. (float_of_int estimation_window -. 1.)
         else
           let result_ = List.nth_exn results curr_index in
-          (* the bandwidth in representation structure is measured in bits/s,
-             so it should be here in the same type of units *)
-          (* let measured_throughput = (result_.segment_size * 8 * us * us) /
-             result_.time_for_delivery in *)
-          (* OCaml's floating-point numbers follow the IEEE 754 standard,
-             using double precision (64 bits) numbers *)
           let measured_throughput =
             ((float_of_int result_.segment_size) *. 8. *. us_float *. us_float) /.
               float_of_int (result_.time_for_delivery) in
@@ -793,16 +760,7 @@ end = struct
           print_endline @@ "repr_prev = " ^ string_of_int repr_prev;
         end
       in
-
-      (* rate_prev is used for ~init below only as a start value,
-         there is no meaning in this particular value, but it cannot be less
-         than the lowest rate among representations *)
-      (*let rate_min =
-          Hashtbl.fold representations ~init:rate_prev ~f:(fun ~key ~data acc ->
-          if data.bandwidth < acc then data.bandwidth else acc) in*)
       let rate_min = (Hashtbl.find_exn representations 1).bandwidth in
-      (*let rate_max = Hashtbl.fold representations ~init:1 ~f:(fun ~key ~data acc ->
-          if data.bandwidth > acc then data.bandwidth else acc) in*)
       let () =
         if debug then begin
           print_endline @@ "rate_min = " ^ string_of_int rate_min;
@@ -867,7 +825,6 @@ end = struct
             print_endline @@ "actual_rate = " ^ string_of_int actual_rate;
           end
         in
-        (* next_repr_candidate > 1, can it be <= 1? *)
         if next_repr_candidate > 1 &&
           not (actual_rate <= int_of_float adaptive_throughput_estimate) then
           highest_possible_actual_rate ~next_repr_candidate:(next_repr_candidate - 1)
