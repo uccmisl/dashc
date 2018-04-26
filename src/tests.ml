@@ -59,23 +59,25 @@ let test_get_last_segment_index () =
   last_segment_index
 
 let test_read_segment_size_file () =
-  let representations = parse_mpd mpd_file_name_1 in
+  Thread_safe.block_on_async_exn(fun () ->
+    let representations = parse_mpd mpd_file_name_1 in
 
-  let body = In_channel.read_all mpd_file_name_1 in
-  let mpd = Xml.parse_string body in
-  let last_segment_index =
-    get_last_segment_index mpd mpd_file_segment_duration_1 None in
+    let body = In_channel.read_all mpd_file_name_1 in
+    let mpd = Xml.parse_string body in
+    let last_segment_index =
+      get_last_segment_index mpd mpd_file_segment_duration_1 None in
 
-  let chunk_sizes_per_repr = read_segment_size_file
-          ?remote_string:None
-          ~link:mpdf_file_link_1
-          ~number_of_representations:(Hashtbl.length representations)
-          ~last_segment_index:last_segment_index in
-  chunk_sizes_per_repr >>| fun chunk_sizes_per_repr ->
-  Alcotest.check Alcotest.int
-    "The number of representations in the given chunk size file is"
-  10
-  (Hashtbl.length chunk_sizes_per_repr)
+    let chunk_sizes_per_repr = read_segment_size_file
+            ?remote_string:None
+            ~link:mpdf_file_link_1
+            ~number_of_representations:(Hashtbl.length representations)
+            ~last_segment_index:last_segment_index in
+    chunk_sizes_per_repr >>| fun chunk_sizes_per_repr ->
+    Alcotest.check Alcotest.int
+      "The number of representations in the given chunk size file is"
+    10
+    (Hashtbl.length chunk_sizes_per_repr)
+  )
 
 let () =
   Alcotest.run "tests" [
@@ -84,6 +86,6 @@ let () =
       "mpd bandwidth parsing", `Quick, mpd_parsing_bandwidth;
       "mpd number of representations parsing", `Quick, mpd_parsing_repr_number;
       "get_last_segment_index fun", `Quick, test_get_last_segment_index;
-      (*"read_segment_size_file fun", `Slow, test_read_segment_size_file;*)
+      "read_segment_size_file fun", `Slow, test_read_segment_size_file;
     ];
   ]
