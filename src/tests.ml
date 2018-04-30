@@ -67,12 +67,12 @@ let test_read_segment_size_file () =
     let last_segment_index =
       get_last_segment_index mpd mpd_file_segment_duration_1 None in
 
-    let chunk_sizes_per_repr = read_segment_size_file
+    read_segment_size_file
             ?remote_string:None
             ~link:mpdf_file_link_1
             ~number_of_representations:(Hashtbl.length representations)
-            ~last_segment_index:last_segment_index in
-    chunk_sizes_per_repr >>| fun chunk_sizes_per_repr ->
+            ~last_segment_index:last_segment_index
+    >>| fun chunk_sizes_per_repr ->
     Alcotest.check Alcotest.int
       "The number of representations in the given chunk size file is"
     10
