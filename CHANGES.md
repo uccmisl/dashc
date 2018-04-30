@@ -2,11 +2,12 @@ Known issues
 --------------------
 * full_byte_range, main_byte_range, onDemand_byte_range profiles are not supported
 
-0.1.* (*)
+0.1.19 (2018.04.30)
 --------------------
 * Cohttp link was updated to 2018.04.19, version 1.1.0
 * Added parsing of the mediaPresentationDuration, lastsegmindex argument is optional now
 * Fixed regression added in 0.1.18 (incorrect calculation of the total_number_of_repr)
+* A few tests were added
 
 0.1.18 (2018.03.02)
 --------------------
