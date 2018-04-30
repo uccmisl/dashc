@@ -132,8 +132,6 @@ opam update          # Update the packages database
 opam upgrade         # Bring everything to the latest version possible
 ```
 
-Currently configure has core.v0.10.0 async.v0.10.0 (specific versions). So, after "opam upgrade" you might need to run "./configure" again.
-
 Q: After the first ./configure, the make prints something like:
 
 ```bash
