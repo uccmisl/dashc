@@ -20,8 +20,11 @@
  ((name runtest)
   (deps (tests.exe))
   (action
-    (progn
-      (copy ../../../test_mpd/segmentlist_bbb_enc_10min_x264_dash.mpd.txt segmentlist_bbb_enc_10min_x264_dash.mpd.txt)
-      (run ${<})))
+   (bash "cp ../../../test_mpd/segmentlist_bbb_enc_10min_x264_dash.mpd.txt segmentlist_bbb_enc_10min_x264_dash.mpd.txt && ./tests.exe")
+  )
  )
 )
+
+;; old variant
+;;(copy ../../../test_mpd/segmentlist_bbb_enc_10min_x264_dash.mpd.txt segmentlist_bbb_enc_10min_x264_dash.mpd.txt)
+;;(run ${<})))
