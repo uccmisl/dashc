@@ -18,13 +18,9 @@
 
 (alias
  ((name runtest)
-  (deps (tests.exe))
-  (action
-   (bash "cp ../../../test_mpd/segmentlist_bbb_enc_10min_x264_dash.mpd.txt segmentlist_bbb_enc_10min_x264_dash.mpd.txt && ./tests.exe")
-  )
+  (deps (tests.exe segmentlist_bbb_enc_10min_x264_dash.mpd.txt))
+  (action (run ${<}))
  )
 )
 
-;; old variant
-;;(copy ../../../test_mpd/segmentlist_bbb_enc_10min_x264_dash.mpd.txt segmentlist_bbb_enc_10min_x264_dash.mpd.txt)
-;;(run ${<})))
+(rule (copy ../../../test_mpd/segmentlist_bbb_enc_10min_x264_dash.mpd.txt segmentlist_bbb_enc_10min_x264_dash.mpd.txt))
