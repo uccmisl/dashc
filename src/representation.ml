@@ -201,7 +201,8 @@ let download_chunk_sizes_per_repr ?conn ~root_link ~representations ~last_segmen
     | true -> return @@ List.rev chunks
     | false ->
       Client.head
-        ?conn:conn (Uri.of_string (root_link ^ (link_of_media media curr_index)))
+        (*?conn:conn (Uri.of_string (root_link ^ (link_of_media media curr_index)))*)
+        (Uri.of_string (root_link ^ (link_of_media media curr_index)))
       >>= fun resp ->
       match (Header.get (Response.headers resp) "content-length") with
       | Some cont_len ->
@@ -226,8 +227,9 @@ let download_chunk_sizes_per_repr ?conn ~root_link ~representations ~last_segmen
   download_next_repr ~curr_index:1 >>= fun () -> return chunk_sizes_per_repr
 
 let open_connection link = function
-  | true -> Client.Net.connect_uri (Uri.of_string link)
-    >>= fun (ic,oc) -> return (Some (ic,oc))
+  (*| true -> Client.Net.connect_uri (Uri.of_string link)
+    >>= fun (ic,oc) -> return (Some (ic,oc))*)
+  | true -> return None
   | false -> return None
 
 let make_segment_size_file ~link ~persist =
@@ -235,7 +237,8 @@ let make_segment_size_file ~link ~persist =
       let _, segmlist_mpd = String.rsplit2_exn link ~on:'/' in
       let outc = Out_channel.create @@ "segmentlist_" ^ segmlist_mpd ^ ".txt" in
       open_connection link persist >>= fun conn ->
-      Client.get ?conn:conn (Uri.of_string link) >>= fun (resp, body) ->
+      (*Client.get ?conn:conn (Uri.of_string link) >>= fun (resp, body) ->*)
+      Client.get (Uri.of_string link) >>= fun (resp, body) ->
       body |> Cohttp_async.Body.to_string >>= fun body ->
       let mpd = Xml.parse_string body in
       let representations : (int, representation) Hashtbl.t = repr_table_from_mpd mpd in

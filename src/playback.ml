@@ -87,7 +87,8 @@ let rec playback
     let next_repr = Hashtbl.find_exn representations next_repr_number in
     let link_to_next_chunk =
       (root_link ^ (link_of_media next_repr.media segment_number)) in
-    Client.get?conn:conn (Uri.of_string link_to_next_chunk)
+    (*Client.get?conn:conn (Uri.of_string link_to_next_chunk)*)
+    Client.get (Uri.of_string link_to_next_chunk)
     >>= fun (resp, body) ->
     body |> Cohttp_async.Body.to_string >>= fun body ->
     let current_time = Time.now () in
@@ -205,7 +206,8 @@ let chunk_sizes
     | "remote" ->
         let segm_list_remote_link =
           root_link ^ "/" ^ "segmentlist_" ^ segmlist_mpd ^ ".txt" in
-        Client.get ?conn:conn (Uri.of_string segm_list_remote_link)
+        (*Client.get ?conn:conn (Uri.of_string segm_list_remote_link)*)
+        Client.get (Uri.of_string segm_list_remote_link)
         >>= fun (resp, body) ->
         body |> Cohttp_async.Body.to_string >>= fun body_string ->
         read_segment_size_file
@@ -292,7 +294,8 @@ let run_client
         create_log_channel
           logname log_folder ("-V" ^ v_number) ("-R" ^ r_number) turnlogon in
       open_connection link persist >>= fun conn ->
-      Client.get ?conn:conn (Uri.of_string link) >>= fun (resp, body) ->
+      (*Client.get ?conn:conn (Uri.of_string link) >>= fun (resp, body) ->*)
+      Client.get (Uri.of_string link) >>= fun (resp, body) ->
       body |> Cohttp_async.Body.to_string >>= fun body ->
       let mpd = Xml.parse_string body in
       let representations : (int, representation) Hashtbl.t = repr_table_from_mpd mpd in
