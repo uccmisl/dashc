@@ -351,35 +351,34 @@ let play =
     ~readme:(fun () -> "Usage example: ./dashc.native play http://10.0.0.1/bbb.mpd \
                         [-adapt conv] [-initb 2] [-maxbuf 60] [-persist true] \
                         [-turnlogon true] [-logname now] [-v 20] [-subfolder qwe]")
-    (
-      let open Command.Let_syntax in
-      [%map_open
-        let link = anon ("link_to_mpd" %: string)
-        and adapt_alg = flag "-adapt" (optional_with_default "conv" string)
+    Command.Spec.(
+        empty
+        +> anon ("link_to_mpd" %: string)
+        +> flag "-adapt" (optional_with_default "conv" string)
           ~doc:" adaptation algorithm [conv; bba-0; bba-1; bba-2; arbiter]"
-        and initb = flag "-initb" (optional_with_default 2 int)
+        +> flag "-initb" (optional_with_default 2 int)
           ~doc:" initial buffer in segments"
-        and maxbuf = flag "-maxbuf" (optional_with_default 60 int)
+        +> flag "-maxbuf" (optional_with_default 60 int)
           ~doc:" maximum buffer size"
-        and persist = flag "-persist" (optional_with_default true bool)
+        +> flag "-persist" (optional_with_default true bool)
           ~doc:" persistent connection"
-        and turnlogon = flag "-turnlogon" (optional_with_default true bool)
+        +> flag "-turnlogon" (optional_with_default true bool)
           ~doc:" turn on logging to file"
-        and logname = flag "-logname" (optional_with_default "now" string)
+        +> flag "-logname" (optional_with_default "now" string)
           ~doc:" name of the log file (\"now\" means usage of the current time stamp \
                 and it is used by default)"
-        and v_number = flag "-v" (optional_with_default "99" string)
+        +> flag "-v" (optional_with_default "99" string)
           ~doc:" video number according to StreamTraceAnalysis.py"
-        and r_number = flag "-r" (optional_with_default "0" string)
+        +> flag "-r" (optional_with_default "0" string)
           ~doc:" the run (R) number for the trace file"
-        and subfolder = flag "-subfolder" (optional_with_default "" string)
+        +> flag "-subfolder" (optional_with_default "" string)
           ~doc:" subfolder for the file"
-        and last_segment_index = flag "-lastsegmindex" (optional int)
+        +> flag "-lastsegmindex" (optional int)
           ~doc:" last segment index for the playback"
-        and gensegmfile = flag "-gensegmfile" (optional_with_default false bool)
+        +> flag "-gensegmfile" (optional_with_default false bool)
           ~doc:" generate segmentlist_%mpd_name%.txt file only \
                 (it will be rewritten if exists)"
-        and segm_size_from_file =
+        +>
           flag "-segmentlist" (optional_with_default "head" string)
           ~doc:" get segment sizes from \n \
                 local - local segmentlist_%mpd_name%.txt file \n \
@@ -389,8 +388,22 @@ let play =
                   before playing for each segment per representation \
                 usage of head requests works only with non-persistent connection so far \
                   and it it set by default (for this operation)"
-        in
-        fun () -> match gensegmfile with
+    )
+    (fun
+      link
+      adapt_alg
+      initb
+      maxbuf
+      persist
+      turnlogon
+      logname
+      v_number
+      r_number
+      subfolder
+      last_segment_index
+      gensegmfile
+      segm_size_from_file
+      () -> match gensegmfile with
         | true -> make_segment_size_file ~link:link ~persist:false
         | false -> run_client
             ~link:link
@@ -405,5 +418,4 @@ let play =
             ~log_folder:subfolder
             ~last_segment_index:last_segment_index
             ~segm_size_from_file:segm_size_from_file
-      ]
     )
