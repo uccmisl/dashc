@@ -152,7 +152,28 @@ A: OCaml allowed to make a working tool in several days due to hands-on expirien
 
 Q: What is OCaml?
 
-A: A good set of resources can be found here <https://ocaml.org/learn/>.
+A: A good set of resources can be found here:
+* <https://ocaml.org/learn/>
+* <https://github.com/rizo/awesome-ocaml>
+* <https://github.com/vramana/awesome-reasonml>
+* <https://dev.realworldocaml.org/>
+* <http://www.cs.cornell.edu/courses/cs3110>
+
+Q: Are there any good IDEs for OCaml?
+
+A: Visual Studio Code with reasonml plugin  (<https://marketplace.visualstudio.com/items?itemName=freebroccolo.reasonml>) is good. Merlin and ocp-indent should be installed as well:
+```bash
+opam install merlin ocp-indent
+```
+
+Q: Are there any open source code examples in OCaml?
+
+A: Some open source projects:
+* <http://www.cs.cornell.edu/courses/cs3110/archive/tournaments.html>
+* <https://github.com/facebook/infer>
+* <https://github.com/facebook/flow>
+* <https://github.com/facebook/pyre-check>
+
 
 ## Citation
 
