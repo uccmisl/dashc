@@ -87,9 +87,13 @@ let rec playback
     let next_repr = Hashtbl.find_exn representations next_repr_number in
     let link_to_next_chunk =
       (root_link ^ (link_of_media next_repr.media segment_number)) in
-    Client.get?conn:conn (Uri.of_string link_to_next_chunk)
+    Client.get ?conn:conn (Uri.of_string link_to_next_chunk)
     >>= fun (resp, body) ->
-    body |> Cohttp_async.Body.to_string >>= fun body ->
+    body |> Cohttp_async.Body.drain >>= fun () ->
+    let content_length = match resp |> Cohttp_async.Response.headers |> Cohttp.Header.get_content_range with
+    | Some content_length -> Int64.to_int_exn content_length
+    | None -> 0
+    in
     let current_time = Time.now () in
     let time_diff = Time.diff current_time start in
     let diff = Time.Span.to_sec time_diff  in
@@ -119,8 +123,8 @@ let rec playback
         time_for_delivery = int_of_float @@ Time.Span.to_us time_diff;
         stall_dur = stall;
         representation_rate = next_repr.bandwidth;
-        actual_representation_rate = 8 * (String.length body) / segment_duration;
-        segment_size = String.length body;
+        actual_representation_rate = 8 * content_length / segment_duration;
+        segment_size = content_length;
         buffer_level_in_momentum = (buf +. float_of_int segment_duration);
         repr_level = next_repr_number;
       } :: results
