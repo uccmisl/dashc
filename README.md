@@ -158,6 +158,8 @@ A: A good set of resources can be found here:
 * <https://github.com/vramana/awesome-reasonml>
 * <https://dev.realworldocaml.org/>
 * <http://www.cs.cornell.edu/courses/cs3110>
+* <http://alan.petitepomme.net/cwn/> (OCaml weekly news)
+* <https://discuss.ocaml.org/>
 
 Q: Are there any good IDEs for OCaml?
 
