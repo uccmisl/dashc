@@ -130,7 +130,10 @@ let rec playback
       } :: results
     in
     print_result (List.hd_exn results) None;
-    print_result (List.hd_exn results) outc;
+    let () = match outc with
+    | Some outc -> print_result (List.hd_exn results) (Some outc)
+    | None -> ()
+    in
     match segment_number >= last_segment_index with
     | true -> Deferred.unit
     | false ->
