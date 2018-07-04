@@ -367,7 +367,7 @@ let play =
           ~doc:" maximum buffer size"
         and persist = flag "-persist" (optional_with_default true bool)
           ~doc:" persistent connection"
-        and turnlogon = flag "-turnlogon" (optional_with_default true bool)
+        and turnlogon = flag "-turnlogon" (optional_with_default false bool)
           ~doc:" turn on logging to file"
         and logname = flag "-logname" (optional_with_default "now" string)
           ~doc:" name of the log file (\"now\" means usage of the current time stamp \
