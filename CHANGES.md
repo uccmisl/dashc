@@ -2,6 +2,13 @@ Known issues
 --------------------
 * full_byte_range, main_byte_range, onDemand_byte_range profiles are not supported
 
+0.1.20 (2018.*.*)
+--------------------
+* content-length (from the header) is now used instead of the (String.length body)
+  for segment size determination
+* The bug related to double printing of the log on the screen was fixed.
+  It happened when the logging to the file was turned off.
+
 0.1.19 (2018.04.30)
 --------------------
 * Cohttp link was updated to 2018.04.19, version 1.1.0
