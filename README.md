@@ -160,6 +160,7 @@ A: A good set of resources can be found here:
 * <http://www.cs.cornell.edu/courses/cs3110>
 * <http://alan.petitepomme.net/cwn/> (OCaml weekly news)
 * <https://discuss.ocaml.org/>
+* Some videos about OCaml (<https://www.youtube.com/watch?v=v1CmGbOGb2I>, <https://www.youtube.com/watch?v=-J8YyfrSwTk>, <https://www.youtube.com/watch?v=FnBPECrSC7o>)
 
 Q: Are there any good IDEs for OCaml?
 
