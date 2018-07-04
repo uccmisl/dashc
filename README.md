@@ -18,6 +18,8 @@ dashc has several options which can be changed through the command line argument
 
 dashc was tested in Ubuntu 16.04/16.10/17.04/17.10/18.04 with x64 architecture and in Ubuntu 16.04.3 with ARM architecture (Raspberry Pi 2/3).
 
+dashc was compiled and briefly tested in macOS High Sierra 10.13, but git, m4 and opam packages have to be installed before running ./configure. Instructions about opam installation can be found at this page <https://opam.ocaml.org/doc/Install.html#OSX>.
+
 To install (./configure will ask for a sudo password to install opam package manager):
 
 ```bash
