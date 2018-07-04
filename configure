@@ -1,6 +1,10 @@
 #!/bin/sh
 
+grep Ubuntu /etc/lsb-release &> /dev/null && DIST="Ubuntu"
+
+if [ "$DIST" = "Ubuntu" ]; then
 sudo apt -y install opam m4 git
+fi
 
 opam init --auto-setup --comp 4.06.1 --yes
 opam switch 4.06.1
