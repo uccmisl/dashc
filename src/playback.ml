@@ -49,6 +49,19 @@ let next_repr_number representations results last_segment_index = function
   | ARBITER algo -> ARBITER.next_representation_level
     ~algo:algo ~representations:representations ~results:results last_segment_index
 
+let try_request_next_chunk ?conn link_to_next_chunk =
+  try_with (fun () ->
+    Client.get ?conn:conn (Uri.of_string link_to_next_chunk)
+    >>| fun (resp, body) -> Some (resp, body)
+  )
+  >>| function
+  | Ok resp_and_body -> resp_and_body
+  | Error e -> begin
+    match (String.is_substring (Exn.to_string e) "Connection closed by remote host") with
+    | true -> None
+    | false -> failwith @@ Exn.to_string e
+    end
+
 let rec playback
     ?conn
     ?outc
@@ -62,7 +75,9 @@ let rec playback
     ~maxbuf
     ~adapt_method
     ~last_segment_index
-    ~segment_duration =
+    ~segment_duration
+    ~link
+    ~persist =
   match is_buffer_full buffer_size maxbuf segment_duration with
   | true ->
     Clock.after (Time.Span.of_sec 0.1) >>= fun () ->
@@ -80,6 +95,8 @@ let rec playback
       ~adapt_method:adapt_method
       ~last_segment_index:last_segment_index
       ~segment_duration:segment_duration
+      ~link:link
+      ~persist:persist
   | false ->
     let start = Time.now () in
     let next_repr_number =
@@ -87,8 +104,22 @@ let rec playback
     let next_repr = Hashtbl.find_exn representations next_repr_number in
     let link_to_next_chunk =
       (root_link ^ (link_of_media next_repr.media segment_number)) in
-    Client.get ?conn:conn (Uri.of_string link_to_next_chunk)
-    >>= fun (resp, body) ->
+    try_request_next_chunk ?conn:conn link_to_next_chunk
+    >>= fun resp_and_body -> begin
+    match resp_and_body with
+    | None -> begin
+        open_connection link persist >>= fun conn ->
+        try_request_next_chunk ?conn:conn link_to_next_chunk
+        >>= fun resp_and_body_2 ->
+        match resp_and_body_2 with
+        | None -> failwith "The second disconnect in a raw"
+        | Some (resp, body) ->
+          print_endline "New connection was opened";
+          return (resp, body, conn)
+      end
+    | Some (resp, body) -> return (resp, body, conn)
+    end
+    >>= fun (resp, body, conn) ->
     body |> Cohttp_async.Body.drain >>= fun () ->
     let content_length = match resp |> Cohttp_async.Response.headers |> Cohttp.Header.get_content_range with
     | Some content_length -> Int64.to_int_exn content_length
@@ -151,6 +182,8 @@ let rec playback
         ~adapt_method:adapt_method
         ~last_segment_index:last_segment_index
         ~segment_duration:segment_duration
+        ~link:link
+        ~persist:persist
 
 let check_input_algorithm_existence input_alg =
   match List.exists supported_algorithms ~f:(fun x -> x = input_alg) with
@@ -336,6 +369,8 @@ let run_client
         ~adapt_method:adapt_method
         ~last_segment_index:last_segment_index
         ~segment_duration:segment_duration
+        ~link:link
+        ~persist:persist
       >>= fun () ->
       match outc with
       | Some outc -> Out_channel.close outc; Deferred.unit
