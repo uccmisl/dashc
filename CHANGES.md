@@ -10,6 +10,7 @@ Known issues
   It happened when the logging to the file was turned off.
 * Reconnection was added, if the server closes connection unexpectedly.
   It happens only once, the second time will force the tool to shutdown.
+* mkdir is not called anymore with an empty string (no more "mkdir: missing operand" message)
 
 0.1.19 (2018.04.30)
 --------------------

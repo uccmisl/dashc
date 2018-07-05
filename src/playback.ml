@@ -327,7 +327,12 @@ let run_client
     ~segm_size_from_file =
   try_with (fun () ->
       check_input_algorithm_existence adapt_alg;
-      Sys.command @@ "mkdir -p " ^ log_folder >>= fun _ ->
+      begin
+      match (log_folder = "") with
+      | true -> return ()
+      | false -> Deferred.ignore @@ Sys.command @@ "mkdir -p " ^ log_folder
+      end
+      >>= fun _ ->
       let outc =
         create_log_channel
           logname log_folder ("-V" ^ v_number) ("-R" ^ r_number) turnlogon in
