@@ -61,7 +61,7 @@ let link_of_media media segmentNumber =
 
 let media_presentation_duration_from_mpd (mpd : xml) =
   match mpd with
-  | Element ("MPD", attrs, clist) ->
+  | Element ("MPD", attrs, _) ->
     let duration_str = (Caml.List.assoc "mediaPresentationDuration" attrs) in
     begin match
       (String.split_on_chars
@@ -105,7 +105,7 @@ let get_last_segment_index xml_str segment_duration last_segment_index =
 let repr_table_from_mpd (mpd : xml) =
   let adaptationSets = Xml.fold (fun acc x ->
       match x with
-      | Element ("Period", attrs, clist) -> clist
+      | Element ("Period", _, clist) -> clist
       (* skip ProgramInformation attribute *)
       | _ -> acc
     ) [] mpd in
@@ -125,19 +125,19 @@ let repr_table_from_mpd (mpd : xml) =
   let representations : (int, representation) Hashtbl.t =
     Hashtbl.Poly.create ~size:total_number_of_repr () in
   let index = ref total_number_of_repr in
-  List.iter adaptationSets (fun adaptationSetTag ->
+  List.iter adaptationSets ~f:(fun adaptationSetTag ->
     Xml.iter (fun nextChild ->
       match nextChild with
       | Element ("Representation", attrs, clist) ->
       (* timescale attribute is used in template based MPD in SegmentTemplate tag *)
         let timescale = match (List.hd_exn clist) with
-          | Element ("SegmentTemplate", attrs, clist) ->
+          | Element ("SegmentTemplate", attrs, _) ->
             int_of_string @@ Caml.List.assoc "timescale" attrs;
           | _ -> 0;
         in
         (* duration attribute is used in template based MPD in SegmentTemplate tag *)
         let duration = match (List.hd_exn clist) with
-          | Element ("SegmentTemplate", attrs, clist) ->
+          | Element ("SegmentTemplate", attrs, _) ->
             int_of_string @@ Caml.List.assoc "duration" attrs;
           | _ -> 0;
         in
@@ -145,21 +145,21 @@ let repr_table_from_mpd (mpd : xml) =
         let height = int_of_string (Caml.List.assoc "height" attrs) in
         let bandwidth = int_of_string (Caml.List.assoc "bandwidth" attrs) in
         let startNumber = match (List.hd_exn clist) with
-          | Element ("SegmentTemplate", attrs, clist) ->
+          | Element ("SegmentTemplate", attrs, _) ->
             int_of_string @@ Caml.List.assoc "startNumber" attrs;
           | _ -> 1;
         in
         let media, duration_new =
           List.fold ~init:(Template_url "", 0) clist ~f:(fun acc x ->
           match x with
-          | Element ("SegmentTemplate", attrs, clist) ->
+          | Element ("SegmentTemplate", attrs, _) ->
             Template_url (Caml.List.assoc "media" attrs), 0
           | Element ("SegmentList", attrs, clist) ->
             let duration_from_segment_list =
               int_of_string @@ Caml.List.assoc "duration" attrs in
             let media_url_list = List.fold ~init:[] clist ~f:(fun acc x ->
               match x with
-              | Element ("SegmentURL", attrs, clist) ->
+              | Element ("SegmentURL", attrs, _) ->
                 Caml.List.assoc "media" attrs :: acc
               | _ -> acc
             ) in
@@ -235,13 +235,13 @@ let make_segment_size_file ~link ~persist =
       let _, segmlist_mpd = String.rsplit2_exn link ~on:'/' in
       let outc = Out_channel.create @@ "segmentlist_" ^ segmlist_mpd ^ ".txt" in
       open_connection link persist >>= fun conn ->
-      Client.get ?conn:conn (Uri.of_string link) >>= fun (resp, body) ->
+      Client.get ?conn:conn (Uri.of_string link) >>= fun (_, body) ->
       body |> Cohttp_async.Body.to_string >>= fun body ->
       let mpd = Xml.parse_string body in
       let representations : (int, representation) Hashtbl.t = repr_table_from_mpd mpd in
       let segment_duration = (Hashtbl.find_exn representations 1).segment_duration in
       let last_segment_index = get_last_segment_index mpd segment_duration None in
-      let root_link, _ = String.rsplit2_exn link '/' in
+      let root_link, _ = String.rsplit2_exn link ~on:'/' in
       let root_link = root_link ^ "/" in
       download_chunk_sizes_per_repr
         ?conn:conn
@@ -270,7 +270,7 @@ let make_segment_size_file ~link ~persist =
   >>| function
   | Ok () -> ()
   | Error e ->
-    match (String.is_substring (Exn.to_string e) "connection attempt timeout") with
+    match (String.is_substring (Exn.to_string e) ~substring:"connection attempt timeout") with
     | true -> print_endline @@ "Connection attempt timeout (10 sec default) to " ^ link
     | false -> print_endline @@ Exn.to_string e
 
@@ -364,7 +364,7 @@ let print_reprs representations =
       let media_template =
         match data.media with
         | Template_url media -> media
-        | List_url list_url -> "list_based_mpd"
+        | List_url _ -> "list_based_mpd"
       in
       print_string media_template;
       print_endline "";

@@ -106,14 +106,14 @@ module BBA_0 = struct
     (* rate_prev is used for ~init below only as a start value,
        there is no meaning in this particular value, but it cannot be less
        than the lowest rate among representations *)
-    let rate_min = Hashtbl.fold representations ~init:rate_prev ~f:(fun ~key ~data acc ->
+    let rate_min = Hashtbl.fold representations ~init:rate_prev ~f:(fun ~key:_ ~data acc ->
         if data.bandwidth < acc then data.bandwidth else acc) in
-    let rate_max = Hashtbl.fold representations ~init:1 ~f:(fun ~key ~data acc ->
+    let rate_max = Hashtbl.fold representations ~init:1 ~f:(fun ~key:_ ~data acc ->
         if data.bandwidth > acc then data.bandwidth else acc) in
     let f buf =
       let slope = (float_of_int (rate_max -rate_min)) /.
                   (0.9 *. maxbuf -. reservoir) in
-      let target_rate = slope *. (buf_now -. reservoir) in
+      let target_rate = slope *. (buf -. reservoir) in
       int_of_float target_rate
     in
     let f_buf = f buf_now in
@@ -127,12 +127,12 @@ module BBA_0 = struct
       if buf_now <= reservoir then rate_min
       else if buf_now >= (reservoir +. cushion) then rate_max
       else if f_buf >= rate_plus then
-        Hashtbl.fold representations ~init:rate_min ~f:(fun ~key ~data acc ->
+        Hashtbl.fold representations ~init:rate_min ~f:(fun ~key:_ ~data acc ->
           if data.bandwidth > acc &&
              data.bandwidth < f_buf then data.bandwidth
           else acc)
       else if f_buf <= rate_minus then
-        Hashtbl.fold representations ~init:rate_max ~f:(fun ~key ~data acc ->
+        Hashtbl.fold representations ~init:rate_max ~f:(fun ~key:_ ~data acc ->
           if data.bandwidth < acc &&
              data.bandwidth > f_buf then data.bandwidth
           else acc)
@@ -172,7 +172,7 @@ module BBA_1 = struct
          it will look like 232000, so the repr_prev will be chosen based on a wrong value.
          To fix it this value 232000 (for example) will be converted into the closest
          within 5% the representation rate from the representations hash table *)
-      if debug then Hashtbl.fold representations ~init:1 ~f:(fun ~key ~data acc ->
+      if debug then Hashtbl.fold representations ~init:1 ~f:(fun ~key:_ ~data acc ->
         if (float_of_int data.bandwidth *. 0.95) <
             float_of_int (List.hd_exn results).representation_rate &&
            (float_of_int data.bandwidth *. 1.05) >
@@ -182,7 +182,7 @@ module BBA_1 = struct
       )
       else (List.hd_exn results).representation_rate
     in
-    let rate_min = Hashtbl.fold representations ~init:rate_prev ~f:(fun ~key ~data acc ->
+    let rate_min = Hashtbl.fold representations ~init:rate_prev ~f:(fun ~key:_ ~data acc ->
         if data.bandwidth < acc then data.bandwidth else acc) in
     let average_chunk_size_per_min_rate = rate_min * segment_duration / 8 in
 
@@ -246,7 +246,7 @@ module BBA_1 = struct
            so the repr_prev will be chosen based on a wrong value.
            To fix it this value 232000 (for example) will be converted into the closest
            within 5% the representation rate from the representations hash table *)
-        if debug then Hashtbl.fold representations ~init:1 ~f:(fun ~key ~data acc ->
+        if debug then Hashtbl.fold representations ~init:1 ~f:(fun ~key:_ ~data acc ->
           if (float_of_int data.bandwidth *. 0.95) <
               float_of_int (List.hd_exn results).representation_rate &&
              (float_of_int data.bandwidth *. 1.05) >
@@ -286,9 +286,9 @@ module BBA_1 = struct
     (* rate_prev is used for ~init below only as a start value,
        there is no meaning in this particular value, but it cannot be less
        than the lowest rate among representations *)
-    let rate_min = Hashtbl.fold representations ~init:rate_prev ~f:(fun ~key ~data acc ->
+    let rate_min = Hashtbl.fold representations ~init:rate_prev ~f:(fun ~key:_ ~data acc ->
         if data.bandwidth < acc then data.bandwidth else acc) in
-    let rate_max = Hashtbl.fold representations ~init:1 ~f:(fun ~key ~data acc ->
+    let rate_max = Hashtbl.fold representations ~init:1 ~f:(fun ~key:_ ~data acc ->
         if data.bandwidth > acc then data.bandwidth else acc) in
 
     let chunk_size_min = List.hd_exn algo.average_chunk_size_per_repr in
@@ -314,7 +314,7 @@ module BBA_1 = struct
     let f buf =
       let slope = (float_of_int (chunk_size_max - chunk_size_min)) /.
                   (0.9 *. maxbuf -. reservoir) in
-      let target_chunk_size = slope *. (buf_now -. reservoir) in
+      let target_chunk_size = slope *. (buf -. reservoir) in
       int_of_float target_chunk_size
     in
     let chunk_size_opt = f buf_now in
@@ -343,7 +343,7 @@ module BBA_1 = struct
     in
 
     (* next highest chunk size for the next segment *)
-    let (chunk_size_plus, repr_plus) =
+    let (chunk_size_plus, _) =
       if rate_prev = rate_max then
           List.nth_exn
             (Hashtbl.find_exn algo.chunk_sizes_per_repr repr_prev)
@@ -353,7 +353,7 @@ module BBA_1 = struct
           (Hashtbl.find_exn algo.chunk_sizes_per_repr (repr_prev + 1))
           segm_number_next, repr_prev + 1
     in
-    let chunk_size_minus, repr_minus =
+    let chunk_size_minus, _ =
       if rate_prev = rate_min then
         List.nth_exn
           (Hashtbl.find_exn algo.chunk_sizes_per_repr 1) segm_number_next, repr_prev
@@ -371,21 +371,21 @@ module BBA_1 = struct
        available video rate (Rate ). *)
     (* the returned repr_next here begins from 0,
        but it should from 1, so it is increased later *)
-    let chunk_size_next, repr_next =
+    let _, repr_next =
       (* the old version
       if chunk_size_opt > chunk_size_plus then chunk_size_plus,repr_plus
       else if chunk_size_opt < chunk_size_minus then chunk_size_minus, repr_minus*)
       if chunk_size_opt_discrete >= chunk_size_plus then
         List.foldi
           chunk_sizes_per_segm_number ~init:(chunk_size_plus, 0) ~f:(fun idx acc x ->
-            let chunk_size_curr, idx_curr = acc in
+            let chunk_size_curr, _ = acc in
             if (x >= chunk_size_curr) && (x <= chunk_size_opt_discrete) then (x, idx)
             else acc
           )
       else if chunk_size_opt_discrete <= chunk_size_minus then
         List.foldi
           chunk_sizes_per_segm_number ~init:(chunk_size_plus, 0) ~f:(fun idx acc x ->
-            let chunk_size_curr, idx_curr = acc in
+            let chunk_size_curr, _ = acc in
             if (x <= chunk_size_curr) && (x <= chunk_size_opt_discrete) then (x, idx)
             else acc
           )
@@ -495,7 +495,7 @@ module BBA_2 = struct
              so the repr_prev will be chosen based on a wrong value.
              To fix it this value 232000 (for example) will be converted into the closest
              within 5% the representation rate from the representations hash table *)
-          if debug then Hashtbl.fold representations ~init:1 ~f:(fun ~key ~data acc ->
+          if debug then Hashtbl.fold representations ~init:1 ~f:(fun ~key:_ ~data acc ->
             if (float_of_int data.bandwidth *. 0.95) <
                 float_of_int (List.hd_exn results).representation_rate &&
                (float_of_int data.bandwidth *. 1.05) >
@@ -515,7 +515,7 @@ module BBA_2 = struct
             print_endline @@ "repr_prev (BBA-2): " ^ string_of_int repr_prev;
           end
         in
-        let rate_max = Hashtbl.fold representations ~init:1 ~f:(fun ~key ~data acc ->
+        let rate_max = Hashtbl.fold representations ~init:1 ~f:(fun ~key:_ ~data acc ->
             if data.bandwidth > acc then data.bandwidth else acc) in
         let repr_plus =
           if rate_prev = rate_max then repr_prev
@@ -736,7 +736,7 @@ end = struct
            so the repr_prev will be chosen based on a wrong value.
            To fix it this value 232000 (for example) will be converted into the closest
            within 5% the representation rate from the representations hash table *)
-        if debug then Hashtbl.fold representations ~init:1 ~f:(fun ~key ~data acc ->
+        if debug then Hashtbl.fold representations ~init:1 ~f:(fun ~key:_ ~data acc ->
           if (float_of_int data.bandwidth *. 0.95) <
               float_of_int (List.hd_exn results).representation_rate &&
              (float_of_int data.bandwidth *. 1.05) >
@@ -766,7 +766,7 @@ end = struct
           print_endline @@ "rate_min = " ^ string_of_int rate_min;
         end
       in
-      let s_rate = Hashtbl.fold representations ~init:rate_min ~f:(fun ~key ~data acc ->
+      let s_rate = Hashtbl.fold representations ~init:rate_min ~f:(fun ~key:_ ~data acc ->
           let () =
             if debug then begin
               print_endline @@ "data.bandwidth = " ^ string_of_int data.bandwidth;

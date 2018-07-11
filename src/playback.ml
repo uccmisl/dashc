@@ -57,7 +57,7 @@ let try_request_next_chunk ?conn link_to_next_chunk =
   >>| function
   | Ok resp_and_body -> resp_and_body
   | Error e -> begin
-    match (String.is_substring (Exn.to_string e) "Connection closed by remote host") with
+    match (String.is_substring (Exn.to_string e) ~substring:"Connection closed by remote host") with
     | true -> None
     | false -> failwith @@ Exn.to_string e
     end
@@ -246,7 +246,7 @@ let chunk_sizes
         let segm_list_remote_link =
           root_link ^ "/" ^ "segmentlist_" ^ segmlist_mpd ^ ".txt" in
         Client.get ?conn:conn (Uri.of_string segm_list_remote_link)
-        >>= fun (resp, body) ->
+        >>= fun (_, body) ->
         body |> Cohttp_async.Body.to_string >>= fun body_string ->
         read_segment_size_file
           ~remote_string:body_string
@@ -337,7 +337,7 @@ let run_client
         create_log_channel
           logname log_folder ("-V" ^ v_number) ("-R" ^ r_number) turnlogon in
       open_connection link persist >>= fun conn ->
-      Client.get ?conn:conn (Uri.of_string link) >>= fun (resp, body) ->
+      Client.get ?conn:conn (Uri.of_string link) >>= fun (_, body) ->
       body |> Cohttp_async.Body.to_string >>= fun body ->
       let mpd = Xml.parse_string body in
       let representations : (int, representation) Hashtbl.t = repr_table_from_mpd mpd in
@@ -384,7 +384,7 @@ let run_client
   >>| function
   | Ok () -> ()
   | Error e -> begin
-    match (String.is_substring (Exn.to_string e) "connection attempt timeout") with
+    match (String.is_substring (Exn.to_string e) ~substring:"connection attempt timeout") with
       | true -> print_endline @@ "Connection attempt timeout (10 sec default) to " ^ link
       | false -> print_endline @@ Exn.to_string e
     end
