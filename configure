@@ -6,8 +6,8 @@ if [ "$DIST" = "Ubuntu" ]; then
 sudo apt -y install opam m4 git
 fi
 
-opam init --auto-setup --comp 4.06.1 --yes
-opam switch 4.06.1
+opam init --auto-setup --comp 4.07.0 --yes
+opam switch 4.07.0
 eval `opam config env`
 opam install -y dune core async xml-light alcotest alcotest-async
 

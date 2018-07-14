@@ -24,4 +24,4 @@ let command =
   Command.group ~summary:"Modes: play"
   [ "play", Playback.play ]
 
-let () = Command.run command ~version:"0.1.19" ~build_info:"OCaml 4.06.1 was used"
+let () = Command.run command ~version:"0.1.19" ~build_info:"OCaml 4.07.0 was used"
