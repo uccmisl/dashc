@@ -12,6 +12,7 @@ Known issues
   It happens only once, the second time will force the tool to shutdown.
 * mkdir is not called anymore with an empty string (no more "mkdir: missing operand" message)
 * Ported from jbuilder to dune (except tests)
+* Cohttp link was updated to 2018.07.08, version 1.1.0
 
 0.1.19 (2018.04.30)
 --------------------

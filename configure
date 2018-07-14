@@ -11,10 +11,10 @@ opam switch 4.06.1
 eval `opam config env`
 opam install -y dune core async xml-light alcotest alcotest-async
 
-echo "Clone cohttp and switch to the first commit of 2018.04.19, version 1.1.0"
+echo "Clone cohttp and switch to the first commit of 2018.07.08, version 1.1.0"
 git clone https://github.com/mirage/ocaml-cohttp.git
 cd ocaml-cohttp/
-git checkout 2de6f277d1e28dfe1070fb5c4563714c0326cfc6
+git checkout b50992f67fffb07a7ec6c0797c2c8cc805bd8011
 cd ..
 
 rm ocaml-cohttp/cohttp-async/src/client.ml
