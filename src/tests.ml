@@ -23,11 +23,11 @@ open Async
 open Playback
 open Representation
 
-let mpd_file_name_1 = "../../../test_mpd/bbb_enc_10min_x264_dash.mpd"
+let mpd_file_name_1 = "bbb_enc_10min_x264_dash.mpd"
 let mpd_file_segment_duration_1 = 4
 let mpdf_file_link_1 = "https://127.0.0.1/bbb_enc_10min_x264_dash.mpd"
 
-let mpd_file_name_2 = "../../../test_mpd/tearsofsteel_enc_x264_dash.mpd"
+let mpd_file_name_2 = "tearsofsteel_enc_x264_dash.mpd"
 let mpd_file_segment_duration_2 = 6
 
 let input_algorithm () =
@@ -107,11 +107,11 @@ let () =
   Alcotest.run "tests" [
     "first", [
       "input algorithm availability", `Quick, input_algorithm;
-      "mpd, bandwidth file 1", `Quick, mpd_parsing_bandwidth_1;
-      "mpd, bandwidth file 2", `Quick, mpd_parsing_bandwidth_2;
-      "mpd, number of representations file 1", `Quick, mpd_parsing_repr_number_1;
-      "mpd, number of representations file 2", `Quick, mpd_parsing_repr_number_2;
-      "mpd, get_last_segment_index, file 1", `Quick, test_get_last_segment_index_1;
+      "bandwidth file 1", `Quick, mpd_parsing_bandwidth_1;
+      "bandwidth file 2", `Quick, mpd_parsing_bandwidth_2;
+      "number of representations file 1", `Quick, mpd_parsing_repr_number_1;
+      "number of representations file 2", `Quick, mpd_parsing_repr_number_2;
+      "get_last_segment_index, file 1", `Quick, test_get_last_segment_index_1;
       "get_last_segment_index, file 2", `Quick, test_get_last_segment_index_2;
       "read_segment_size_file fun", `Slow, test_read_segment_size_file;
     ];

@@ -27,7 +27,7 @@ To install (./configure will ask for a sudo password to install opam package man
 make
 ```
 
-To run tests (not necessary) (does not work temporarily):
+To run tests (not necessary):
 
 ```bash
 make test

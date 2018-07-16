@@ -11,7 +11,7 @@ Known issues
 * Reconnection was added, if the server closes connection unexpectedly.
   It happens only once, the second time will force the tool to shutdown.
 * mkdir is not called anymore with an empty string (no more "mkdir: missing operand" message)
-* Ported from jbuilder to dune (except tests)
+* Ported from jbuilder to dune
 * Cohttp link was updated to 2018.07.08, version 1.1.0
 * Update to OCaml 4.07.0 from 4.06.1
 
