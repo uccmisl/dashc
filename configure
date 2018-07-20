@@ -4,6 +4,8 @@ grep Ubuntu /etc/lsb-release &> /dev/null && DIST="Ubuntu"
 
 if [ "$DIST" = "Ubuntu" ]; then
 sudo apt -y install opam m4 git
+elif [ "$(uname)" == "Darwin" ]; then
+brew install opam m4 git
 fi
 
 opam init --auto-setup --comp 4.07.0 --yes
