@@ -14,6 +14,7 @@ Known issues
 * Ported from jbuilder to dune
 * Cohttp link was updated to 2018.07.08, version 1.1.0
 * Update to OCaml 4.07.0 from 4.06.1
+* Parsing of mpd files is more generic now (#2, reported by pedosb)
 
 0.1.19 (2018.04.30)
 --------------------

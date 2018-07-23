@@ -124,7 +124,7 @@ let repr_table_from_mpd (mpd : xml) =
       total_number_of_repr_per_adaptation_set ~init:0 ~f:(fun acc x -> acc + x) in
   let representations : (int, representation) Hashtbl.t =
     Hashtbl.Poly.create ~size:total_number_of_repr () in
-  let index = ref total_number_of_repr in
+  let representations_not_sorted = ref [] in
   List.iter adaptationSets ~f:(fun adaptationSetTag ->
     Xml.iter (fun nextChild ->
       match nextChild with
@@ -168,15 +168,8 @@ let repr_table_from_mpd (mpd : xml) =
         ) in
         let duration_final =
           if timescale = 0 || duration = 0 then duration_new else duration / timescale in
-        Hashtbl.add_exn representations
-          (* the key here is a representation id,
-            however, in some MPD the representations starts from the highest one
-            in the other from the lowest one,
-            so this calculations below is not the generic way,
-            it should probably based on sorted by bandwidth order *)
-          ~key:(if timescale = 0 || duration = 0 then
-            (total_number_of_repr + 1 - !index) else !index)
-          ~data:{
+        representations_not_sorted :=
+          {
             width = width;
             height = height;
             bandwidth = bandwidth;
@@ -186,10 +179,18 @@ let repr_table_from_mpd (mpd : xml) =
                at least in our examples *)
             startNumber = startNumber;
             segment_duration = duration_final;
-          };
-        index := !index - 1
+          } :: !representations_not_sorted;
       | _ -> ()
     ) adaptationSetTag;
+  );
+  representations_not_sorted := List.sort ~compare:(fun x y ->
+    if x.bandwidth > y.bandwidth then 1
+    else if x.bandwidth < y.bandwidth then -1
+    else 0) !representations_not_sorted;
+  List.iteri !representations_not_sorted ~f:(fun idx repr ->
+    Hashtbl.add_exn representations
+      ~key:(idx + 1)
+      ~data:repr
   );
   representations
 
