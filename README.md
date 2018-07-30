@@ -180,7 +180,7 @@ A: Some open source projects:
 
 ## Citation
 
-Aleksandr Reviakin, Ahmed H. Zahran, Cormac J. Sreenan. dashc : a highly scalable client emulator for DASH video. MMSys 2018 Open Dataset & Software Track.
+Aleksandr Reviakin, Ahmed H. Zahran, Cormac J. Sreenan. dashc : a highly scalable client emulator for DASH video. MMSys 2018 Open Dataset & Software Track, <https://cora.ucc.ie/bitstream/handle/10468/6408/6056_accepted_version_dashc_-_a_highly_scalable_client_emulator_for_DASH_video.pdf>
 
 ## Licence
 
