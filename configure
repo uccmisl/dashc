@@ -1,16 +1,16 @@
-#!/bin/sh
+#!/bin/bash
 
 grep Ubuntu /etc/lsb-release &> /dev/null && DIST="Ubuntu"
 
 if [ "$DIST" = "Ubuntu" ]; then
-sudo apt -y install opam m4 git
+sudo apt -y install bubblewrap m4 git
 elif [ "$(uname)" == "Darwin" ]; then
-brew install opam m4 git
+brew install m4 git
 fi
 
+sh <(curl -sL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh)
 opam init --auto-setup --comp 4.07.0 --yes
-opam switch 4.07.0
-eval `opam config env`
+eval $(opam env)
 opam install -y dune core async xml-light alcotest alcotest-async
 
 echo "Clone cohttp and switch to the first commit of 2018.07.08, version 1.1.0"

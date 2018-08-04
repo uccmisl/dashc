@@ -15,6 +15,7 @@ Known issues
 * Cohttp link was updated to 2018.07.08, version 1.1.0
 * Update to OCaml 4.07.0 from 4.06.1
 * Parsing of mpd files is more generic now (#2, reported by pedosb)
+* Ported from opam 1.2.2 to 2.0.0
 
 0.1.19 (2018.04.30)
 --------------------

@@ -18,7 +18,7 @@ dashc has several options which can be changed through the command line argument
 
 dashc had been used in Ubuntu 16.04/16.10/17.04/17.10/18.04 with x64 architecture (continuously for an ~1 year), in Ubuntu 16.04.3 with Raspberry Pi 2/3 (briefly), in macOS High Sierra 10.13 (briefly).
 
-To install (./configure might ask for a sudo password to install opam, m4, git):
+To install (./configure might ask for a sudo password to install opam, m4, git and bubblewrap (for Linux only)):
 
 ```bash
 ./configure
@@ -122,6 +122,10 @@ The tool was tested with this dataset https://www.ucc.ie/en/misl/research/datase
 If you have an issue, please create a new one in github with necessary information (type of MPD file, OS version and etc.).
 
 ## FAQ
+
+Q: I have opam 1.2.2 already, do I really need to install opam 2.0.0?
+
+A: Yes, read the <https://opam.ocaml.org/blog/opam-2-0-0-repo-upgrade-roadmap/>.
 
 Q: X package (dependency) cannot be installed.
 
