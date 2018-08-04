@@ -25,6 +25,20 @@ To install (./configure might ask for a sudo password to install opam, m4, git a
 make
 ```
 
+During ./configure, some questions might be asked:
+
+Q: ## Where should it be installed ? [/usr/local/bin]
+
+A: Accept it.
+
+Q: Do you want opam to modify ~/.profile? [N/y/f]
+
+A: y
+
+Q: A hook can be added to opam's init scripts to ensure that the shell remains in sync with the opam environment when they are loaded. Set that up? [y/N]
+
+A: y
+
 To run tests (not necessary):
 
 ```bash
