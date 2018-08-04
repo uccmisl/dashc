@@ -176,6 +176,7 @@ opam install merlin ocp-indent
 Q: Are there any open source code examples in OCaml?
 
 A: Some open source projects:
+* <https://github.com/tezos>
 * <http://www.cs.cornell.edu/courses/cs3110/archive/tournaments.html>
 * <https://github.com/facebook/infer>
 * <https://github.com/facebook/flow>
