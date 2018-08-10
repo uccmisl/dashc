@@ -30,6 +30,13 @@ let mpdf_file_link_1 = "https://127.0.0.1/bbb_enc_10min_x264_dash.mpd"
 let mpd_file_name_2 = "tearsofsteel_enc_x264_dash.mpd"
 let mpd_file_segment_duration_2 = 6
 
+let mpd_file_name_3 = "bbb_enc_10min_x264_dash_rev1.mpd"
+let mpd_file_segment_duration_3 = 4
+let mpd_file_name_4 = "bbb_enc_10min_x264_dash_rev2.mpd"
+let mpd_file_segment_duration_4 = 4
+let mpd_file_name_5 = "bbb_enc_10min_x264_dash_mixed.mpd"
+let mpd_file_segment_duration_5 = 4
+
 let input_algorithm () =
   Alcotest.check Alcotest.unit
     "BBA-2 is supported" () (check_input_algorithm_existence "bba-2")
@@ -50,6 +57,24 @@ let mpd_parsing_bandwidth_2 () =
   let representations = parse_mpd mpd_file_name_2 in
   Alcotest.check Alcotest.int "The bandwidth value in the given mpd file is"
   236378
+  (Hashtbl.find_exn representations 1).bandwidth
+
+let mpd_parsing_bandwidth_3 () =
+  let representations = parse_mpd mpd_file_name_3 in
+  Alcotest.check Alcotest.int "The bandwidth value in the given mpd file is"
+  232385
+  (Hashtbl.find_exn representations 1).bandwidth
+
+let mpd_parsing_bandwidth_4 () =
+  let representations = parse_mpd mpd_file_name_4 in
+  Alcotest.check Alcotest.int "The bandwidth value in the given mpd file is"
+  232385
+  (Hashtbl.find_exn representations 1).bandwidth
+
+let mpd_parsing_bandwidth_5 () =
+  let representations = parse_mpd mpd_file_name_5 in
+  Alcotest.check Alcotest.int "The bandwidth value in the given mpd file is"
+  232385
   (Hashtbl.find_exn representations 1).bandwidth
 
 let mpd_parsing_repr_number_1 () =
@@ -109,6 +134,9 @@ let () =
       "input algorithm availability", `Quick, input_algorithm;
       "bandwidth file 1", `Quick, mpd_parsing_bandwidth_1;
       "bandwidth file 2", `Quick, mpd_parsing_bandwidth_2;
+      "bandwidth file 3", `Quick, mpd_parsing_bandwidth_3;
+      "bandwidth file 4", `Quick, mpd_parsing_bandwidth_4;
+      "bandwidth file 5", `Quick, mpd_parsing_bandwidth_5;
       "number of representations file 1", `Quick, mpd_parsing_repr_number_1;
       "number of representations file 2", `Quick, mpd_parsing_repr_number_2;
       "get_last_segment_index, file 1", `Quick, test_get_last_segment_index_1;

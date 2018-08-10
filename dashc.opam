@@ -1,12 +1,12 @@
-opam-version: "1.2"
+opam-version: "2.0"
+name: "dashc"
+version: "0.1.19"
+synopsis: "DASH video client emulator"
 maintainer: "ar11@cs.ucc.ie"
 authors: ["Aleksandr Reviakin"]
 homepage: "https://www.ucc.ie/en/compsci/"
 bug-reports: "https://github.com/uccmisl/dashc/issues"
 dev-repo: "https://github.com/uccmisl/dashc.git"
-build: [
-  ["jbuilder" "build" "-p" name "-j" jobs]
-]
-
-depends: ["jbuilder" {build}]
-available: [ ocaml-version >= "4.06.1"]
+depends: ["dune" {build}]
+build: ["dune" "build" "-p" name]
+available: [ ocaml-version >= "4.07.0"]

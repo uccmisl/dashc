@@ -16,16 +16,28 @@ dashc has several options which can be changed through the command line argument
 
 ## Installation
 
-dashc was tested in Ubuntu 16.04/16.10/17.04/17.10/18.04 with x64 architecture and in Ubuntu 16.04.3 with ARM architecture (Raspberry Pi 2/3).
+dashc had been used in Ubuntu 16.04/16.10/17.04/17.10/18.04 with x64 architecture (continuously for an ~1 year), in Ubuntu 16.04.3 with Raspberry Pi 2/3 (briefly), in macOS High Sierra 10.13 (briefly).
 
-dashc was compiled and briefly tested in macOS High Sierra 10.13, but git, m4 and opam packages have to be installed before running ./configure. Instructions about opam installation can be found at this page <https://opam.ocaml.org/doc/Install.html#OSX>.
-
-To install (./configure will ask for a sudo password to install opam package manager):
+To install (./configure might ask for a sudo password to install opam, m4, git and bubblewrap (for Linux only)):
 
 ```bash
 ./configure
 make
 ```
+
+During ./configure, some questions might be asked:
+
+Q: ## Where should it be installed ? [/usr/local/bin]
+
+A: Accept it.
+
+Q: Do you want opam to modify ~/.profile? [N/y/f]
+
+A: y
+
+Q: A hook can be added to opam's init scripts to ensure that the shell remains in sync with the opam environment when they are loaded. Set that up? [y/N]
+
+A: y
 
 To run tests (not necessary):
 
@@ -125,6 +137,10 @@ If you have an issue, please create a new one in github with necessary informati
 
 ## FAQ
 
+Q: I have opam 1.2.2 already, do I really need to install opam 2.0.0?
+
+A: Yes, read the <https://opam.ocaml.org/blog/opam-2-0-0-repo-upgrade-roadmap/>.
+
 Q: X package (dependency) cannot be installed.
 
 A: Update of the packages database might help.
@@ -174,6 +190,7 @@ opam install merlin ocp-indent
 Q: Are there any open source code examples in OCaml?
 
 A: Some open source projects:
+* <https://github.com/tezos>
 * <http://www.cs.cornell.edu/courses/cs3110/archive/tournaments.html>
 * <https://github.com/facebook/infer>
 * <https://github.com/facebook/flow>
@@ -182,7 +199,7 @@ A: Some open source projects:
 
 ## Citation
 
-Aleksandr Reviakin, Ahmed H. Zahran, Cormac J. Sreenan. dashc : a highly scalable client emulator for DASH video. MMSys 2018 Open Dataset & Software Track.
+Aleksandr Reviakin, Ahmed H. Zahran, Cormac J. Sreenan. dashc : a highly scalable client emulator for DASH video. MMSys 2018 Open Dataset & Software Track, <https://cora.ucc.ie/bitstream/handle/10468/6408/6056_accepted_version_dashc_-_a_highly_scalable_client_emulator_for_DASH_video.pdf>
 
 ## Licence
 

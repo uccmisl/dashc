@@ -18,10 +18,16 @@
   (deps tests.exe
    segmentlist_bbb_enc_10min_x264_dash.mpd.txt
    bbb_enc_10min_x264_dash.mpd
+   bbb_enc_10min_x264_dash_rev1.mpd
+   bbb_enc_10min_x264_dash_rev2.mpd
+   bbb_enc_10min_x264_dash_mixed.mpd
    tearsofsteel_enc_x264_dash.mpd)
   (action (run ./tests.exe))
 )
 
 (rule (copy ../test_mpd/segmentlist_bbb_enc_10min_x264_dash.mpd.txt segmentlist_bbb_enc_10min_x264_dash.mpd.txt))
 (rule (copy ../test_mpd/bbb_enc_10min_x264_dash.mpd bbb_enc_10min_x264_dash.mpd))
+(rule (copy ../test_mpd/bbb_enc_10min_x264_dash_rev1.mpd bbb_enc_10min_x264_dash_rev1.mpd))
+(rule (copy ../test_mpd/bbb_enc_10min_x264_dash_rev2.mpd bbb_enc_10min_x264_dash_rev2.mpd))
+(rule (copy ../test_mpd/bbb_enc_10min_x264_dash_mixed.mpd bbb_enc_10min_x264_dash_mixed.mpd))
 (rule (copy ../test_mpd/tearsofsteel_enc_x264_dash.mpd tearsofsteel_enc_x264_dash.mpd))
