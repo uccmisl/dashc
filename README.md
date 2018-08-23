@@ -50,13 +50,13 @@ make test
 dashc can be run as simple as:
 
 ```bash
-./dashc.exe play http://10.0.0.1/bbb.mpd
+./dashc.exe play http://www.cs.ucc.ie/~jq5/www_dataset_temp/x264_4sec/bbb_10min/DASH_Files/VOD/bbb_enc_10min_x264_dash.mpd
 ```
 
-or:
+or (all available options):
 
 ```bash
-./dashc.exe play http://10.0.0.1/bbb.mpd [-adapt conv] [-initb 2] [-maxbuf 60] [-persist true] [-turnlogon true] [-logname now] [-subfolder qwe]
+./dashc.exe play http://127.0.0.1/bbb.mpd [-adapt conv] [-initb 2] [-maxbuf 60] [-persist true] [-turnlogon true] [-logname now] [-subfolder qwe]
 ```
 
 Where all flags except the link to the MPD file are optional. Possible flags are:
