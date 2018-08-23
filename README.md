@@ -127,9 +127,12 @@ The columns include next information:
 * segment size in bytes;
 * buffer level after this segment was just downloaded, in seconds;
 
-## Dataset
+## Possible datasets for usage
 
-The tool was tested with this dataset https://www.ucc.ie/en/misl/research/datasets/ivid_dataset/. The example of the log file above was taken with the Big Buck Bunny movie 4 second segment size x264 video codec and caddy web server (<https://en.wikipedia.org/wiki/Caddy_(web_server)>).
+iVID-Datasets for AVC (H.264) and HEVC (H.265): <https://www.ucc.ie/en/misl/research/datasets/ivid_dataset/>. The example of the log file above was taken with this dataset and caddy web server (<https://en.wikipedia.org/wiki/Caddy_(web_server)>).
+
+AVC and HEVC UHD 4K DASH Datasets: <https://www.ucc.ie/en/misl/research/datasets/ivid_uhd_dataset/>
+
 
 ## Support
 
