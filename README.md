@@ -79,6 +79,18 @@ The detailed help can be found by running it with the -help flag:
 ./dashc.exe play -help
 ```
 
+If you don't want to wait while "meta information" is being downloaded "Starting of downloading headers for representation %NUMBER%" (segment sizes for BBA-1/2 and ARBITER) you can use -gensegmfile flag to pre-download one, for example, by typing
+
+```bash
+./dashc.exe play http://www.cs.ucc.ie/~jq5/www_dataset_temp/x264_4sec/ed_10min/DASH_Files/VOD/ed_enc_10min_x264_dash.mpd -gensegmfile true
+```
+
+file "segmentlist_ed_enc_10min_x264_dash.mpd.txt" will be created in the current folder. Then you can run it like
+
+```bash
+./dashc.exe play http://www.cs.ucc.ie/~jq5/www_dataset_temp/x264_4sec/ed_10min/DASH_Files/VOD/ed_enc_10min_x264_dash.mpd -adapt arbiter -segmentlist local
+```
+
 The typical log file will look like the example below (here the data only for the first 30 segments is shown, ARBITER adaptation algorithm is used, bbb-264 4 seconds segment size clip is used):
 
 ```bash
