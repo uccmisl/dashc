@@ -2,7 +2,7 @@ Known issues
 --------------------
 * full_byte_range, main_byte_range, onDemand_byte_range profiles are not supported
 
-0.1.20 (2018.*.*)
+0.1.20 (2018.09)
 --------------------
 * content-length (from the header) is now used instead of the (String.length body)
   for segment size determination
