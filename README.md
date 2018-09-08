@@ -2,7 +2,7 @@
 
 ## Description
 
-dashc is an emulator of the video player, it is intended to be used as a test tool. The original goal was to have a lightweight test tool for network performance experiments with a real DASH video streaming traffic.
+dashc is an emulator of the video player, it was intended to be used as a test tool. The original goal was to have a lightweight test tool for network performance experiments with a real DASH video streaming traffic.
 
 dashc has several options which can be changed through the command line arguments:
 
@@ -16,7 +16,7 @@ dashc has several options which can be changed through the command line argument
 
 ## Installation
 
-dashc had been used in Ubuntu 16.04/16.10/17.04/17.10/18.04 with x64 architecture (continuously during 2017), in Ubuntu 16.04.3 with Raspberry Pi 2/3 (briefly during 2017), in macOS High Sierra 10.13 (briefly during 2018). Ubuntu 16.04/16.10/17.04/17.10 were used for tests when they were the newest available versions - dashc might work or might not work with them right now, only 18.04 version is used for tests currently.
+dashc had been used in Ubuntu 16.04/16.10/17.04/17.10/18.04 with x64 architecture (continuously during 2017), in Ubuntu 16.04.3 with Raspberry Pi 2/3 (briefly during 2017), in macOS High Sierra 10.13 (briefly during 2018). Ubuntu 16.04/16.10/17.04/17.10 were used for tests when they were the newest available versions - dashc might work or might not work with them right now, 18.04 version was used for tests during the last time.
 
 To install (./configure might ask for a sudo password to install opam, m4, git and bubblewrap (for Linux only)):
 
@@ -148,24 +148,24 @@ AVC and HEVC UHD 4K DASH Datasets: <https://www.ucc.ie/en/misl/research/datasets
 
 ## Support
 
-If you have an issue, please create a new one in github with necessary information (type of MPD file, OS version and etc.).
+dashc is not in active development, if you have an issue, please, create a new one in github with necessary information (type of MPD file, OS version and etc.) - maybe somebody will answer.
 
 ## FAQ
 
-Q: I have opam 1.2.2 already, do I really need to install opam 2.0.0?
+Q: I have opam 1.2.2 already, do I really need to install opam 2?
 
 A: Yes, read the <https://opam.ocaml.org/blog/opam-2-0-0-repo-upgrade-roadmap/>.
 
 Q: X package (dependency) cannot be installed.
 
-A: Update of the packages database might help.
+A: Update of the packages database might help. opam-repository (<https://github.com/ocaml/opam-repository/pulls>) changes constantly - some packages might break temporarily.
 
 ```bash
 opam update          # Update the packages database
 opam upgrade         # Bring everything to the latest version possible
 ```
 
-Q: After the first ./configure, the make prints something like:
+Q: After the first ./configure, the make prints something like (jbuilder can be changed to dune in this message):
 
 ```bash
 make: jbuilder: Command not found
@@ -175,13 +175,17 @@ make: *** [all] Error 127
 
 A: Log out of the OS and log in back might help.
 
+Q: Why one of Cohttp library files is swapped during ./configure?
+
+A: Cohttp library has (had?) interface only for non-persistent connections (requests), so it is slightly modifed by this file. configure keeps the hash of the last commit (<https://github.com/mirage/ocaml-cohttp>) when everything was fine, it make sense to update it sometimes (cohttp might get support of a new OCaml compiler or new features/bug fixes).
+
 Q: Why there was a need in a new implementation instead of updating already existing similar solutions?
 
-A: It was clear that the new implementation won't take much time.
+A: Initially GPAC player was supposed to be used for doing the main phd research, but it didn't work properly for some reason. At the same time it was clear that making a custom small emulator of the video player won't take much time.
 
 Q: Why OCaml was used (not a C/C++/Java/C#/Python)?
 
-A: OCaml allowed to make a working tool in several days due to hands-on expirience with it.
+A: The main reason for OCaml choice was a past expirience with it. It took around two weeks of development to make a tool with conventional and BBA-0/1/2 algorithms during December 2016 (Christmas holidays!).
 
 Q: What is OCaml?
 
@@ -194,6 +198,10 @@ A: A good set of resources can be found here:
 * <http://alan.petitepomme.net/cwn/> (OCaml weekly news)
 * <https://discuss.ocaml.org/>
 * Some videos about OCaml (<https://www.youtube.com/watch?v=v1CmGbOGb2I>, <https://www.youtube.com/watch?v=-J8YyfrSwTk>, <https://www.youtube.com/watch?v=FnBPECrSC7o>)
+
+Q: Does anybody use OCaml in production?
+
+A: <https://ocaml.org/learn/companies.html>
 
 Q: Are there any good IDEs for OCaml?
 
