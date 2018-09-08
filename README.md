@@ -29,7 +29,7 @@ During ./configure, some questions might be asked:
 
 Q: ## Where should it be installed ? [/usr/local/bin]
 
-A: Accept it.
+A: Accept it (just an enter key on a keyboard, not a "y" and then enter key).
 
 Q: Do you want opam to modify ~/.profile? [N/y/f]
 
@@ -165,10 +165,10 @@ opam update          # Update the packages database
 opam upgrade         # Bring everything to the latest version possible
 ```
 
-Q: After the first ./configure, the make prints something like (jbuilder can be changed to dune in this message):
+Q: After the first ./configure, the make prints something like:
 
 ```bash
-make: jbuilder: Command not found
+make: dune: Command not found
 Makefile:4: recipe for target 'all' failed
 make: *** [all] Error 127
 ```
