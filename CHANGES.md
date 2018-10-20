@@ -2,6 +2,11 @@ Known issues
 --------------------
 * full_byte_range, main_byte_range, onDemand_byte_range profiles are not supported
 
+0.1.21 (2018.10)
+--------------------
+* Cohttp link was updated to 2018.10.19, version 1.2.0
+* Update to OCaml 4.07.1 from 4.07.0
+
 0.1.20 (2018.09)
 --------------------
 * content-length (from the header) is now used instead of the (String.length body)
