@@ -20,7 +20,7 @@ dashc had been used in Ubuntu 16.04/16.10/17.04/17.10/18.04 with x64 architectur
 
 the current version of dashc has been tested with 18.04.02.
 
-To install (./configure might ask for a sudo password to install opam, m4, git and bubblewrap (for Linux only)):
+To install (./configure might ask for a sudo password to install opam, m4, git, bubblewrap and other dependencies (for Linux only)):
 
 ```bash
 ./configure
