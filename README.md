@@ -16,7 +16,9 @@ dashc has several options which can be changed through the command line argument
 
 ## Installation
 
-dashc had been used in Ubuntu 16.04/16.10/17.04/17.10/18.04 with x64 architecture (continuously during 2017), in Ubuntu 16.04.3 with Raspberry Pi 2/3 (briefly during 2017), in macOS High Sierra 10.13 (briefly during 2018). Ubuntu 16.04/16.10/17.04/17.10 were used for tests when they were the newest available versions - dashc might work or might not work with them right now, 18.04 version was used for tests during the last time.
+dashc had been used in Ubuntu 16.04/16.10/17.04/17.10/18.04 with x64 architecture (continuously during 2017), in Ubuntu 16.04.3 with Raspberry Pi 2/3 (briefly during 2017), in macOS High Sierra 10.13 (briefly during 2018). Ubuntu 16.04/16.10/17.04/17.10 were used for tests when they were the newest available versions - dashc might work or might not work with them right now.
+
+the current version of dashc has been tested with 18.04.02.
 
 To install (./configure might ask for a sudo password to install opam, m4, git and bubblewrap (for Linux only)):
 
