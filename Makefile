@@ -1,7 +1,7 @@
 .PHONY: build clean test install uninstall clean
 
 all:
-		@dune build src/dashc.exe
+		@dune build --profile release src/dashc.exe
 		cp _build/default/src/dashc.exe dashc.exe
 test:
 		@dune build src/tests.exe
