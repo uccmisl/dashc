@@ -3,7 +3,7 @@
 grep Ubuntu /etc/lsb-release &> /dev/null && DIST="Ubuntu"
 
 if [ "$DIST" = "Ubuntu" ]; then
-  sudo apt -y install bubblewrap m4 git python-3-pip net-tools curl mercurial darcs libcap-dev
+  sudo apt -y install bubblewrap m4 git python-3-pip net-tools curl mercurial darcs libcap-dev unzip
 
   if dpkg-query -l | grep -E '^ii' | grep ocaml
   then
