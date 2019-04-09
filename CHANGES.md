@@ -2,6 +2,10 @@ Known issues
 --------------------
 * full_byte_range, main_byte_range, onDemand_byte_range profiles are not supported
 
+0.1.22 (2019.04)
+--------------------
+* updates to configure and Makefile to remove build errors with updated verison of ocaml, cohttp, etc.
+
 0.1.21 (2018.10)
 --------------------
 * Cohttp link was updated to 2018.10.19, version 1.2.0
