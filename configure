@@ -3,7 +3,18 @@
 grep Ubuntu /etc/lsb-release &> /dev/null && DIST="Ubuntu"
 
 if [ "$DIST" = "Ubuntu" ]; then
-sudo apt -y install bubblewrap m4 git
+  sudo apt -y install bubblewrap m4 git python-3-pip net-tools curl mercurial darcs libcap-dev
+
+  if dpkg-query -l | grep -E '^ii' | grep ocaml
+  then
+    echo "removing Ocaml pinned links"
+    opam pin remove -y cohttp ocaml-cohttp
+    opam remove -y cohttp cohttp-async
+    opam pin remove -y cohttp-async ocaml-cohttp
+  fi
+  
+  pip3 install numpy
+
 elif [ "$(uname)" == "Darwin" ]; then
 brew install m4 git
 fi
@@ -11,7 +22,7 @@ fi
 sh <(curl -sL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh)
 opam init --auto-setup --comp 4.07.1 --yes
 eval $(opam env)
-opam install -y dune core async xml-light alcotest alcotest-async
+opam install -y dune core async xml-light alcotest alcotest-async merlin ocp-indent utop cohttp 'cohttp-async<2.1.1' 'base64<3.0.0'
 
 echo "Clone cohttp and switch to the first commit of 2018.10.19, version 1.2.0"
 git clone https://github.com/mirage/ocaml-cohttp.git
