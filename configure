@@ -13,8 +13,6 @@ if [ "$DIST" = "Ubuntu" ]; then
     opam pin remove -y cohttp-async ocaml-cohttp
   fi
 
-  
-
   pip3 install numpy
 
 elif [ "$(uname)" == "Darwin" ]; then
